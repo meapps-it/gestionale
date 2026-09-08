@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Gestionale"/>
-<link rel="manifest" href="manifest.json?v=1.0.118"/>
+<link rel="manifest" href="manifest.json?v=1.0.120"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-v1-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-v1-192.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v1.png"/>
@@ -920,7 +920,7 @@ body.sideMenuOpen{overflow:hidden}
   <div id="sec_impostazioni" class="section">
     <div class="card">
       <div class="h2">Calcolo prezzo vendita</div>
-      <div class="small">Scegli come calcolare il prezzo di vendita a partire dal prezzo fornitore in euro.</div>
+      <div class="small">Scegli come calcolare il prezzo di vendita a partire dal costo di acquisto in euro.</div>
       <div class="grid2" style="margin-top:10px">
         <div>
           <div class="k">Metodo</div>
@@ -941,10 +941,14 @@ body.sideMenuOpen{overflow:hidden}
     </div>
     <div class="card" style="margin-top:12px">
       <div class="h2">Dati di esempio</div>
-      <div class="small">Rimuove articoli, clienti e ordini demo. Non elimina le impostazioni dell'app.</div>
+      <div class="small">Rimuove i 5 articoli, i 5 clienti e i 3 ordini di esempio. I tuoi dati reali e le impostazioni restano invariati.</div>
       <div class="actions compact" style="margin-top:10px">
         <button class="btn danger smallish" id="deleteDemoDataBtn" type="button">Elimina dati esempio</button>
       </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="h2">Foto dati di esempio</div>
+      <div class="small">Le foto demo sono fotografie reali caricate da Wikimedia Commons. Autore, fonte e licenza sono indicati nel file CREDITI_FOTO_DEMO.txt incluso nel pacchetto.</div>
     </div>
     <div class="card" style="margin-top:12px"><div class="h2">Impostazioni</div>
       <div class="small">Backup e strumenti</div>
@@ -1190,16 +1194,11 @@ body.sideMenuOpen{overflow:hidden}
     <div id="vArtColors" class="t">-</div>
   </div>
 
-  <div class="grid2" style="margin-top:10px">
-    <div>
-      <div class="k">Fornitore</div>
-      <div id="vArtForn" class="t">-</div>
-    </div>
-    <div>
-      <div class="k">Data inserimento</div>
-      <div id="vArtCreatedAt" class="t">-</div>
-    </div>
+  <div style="margin-top:10px">
+    <div class="k">Data inserimento</div>
+    <div id="vArtCreatedAt" class="t">-</div>
   </div>
+  <div id="vArtForn" style="display:none"></div>
 
   <div class="hr"></div>
   <div class="h3">Prezzi</div>
@@ -1218,10 +1217,6 @@ body.sideMenuOpen{overflow:hidden}
   <div style="margin-top:14px">
     <div class="k">Descrizione</div>
     <div id="vArtDescription" class="mutedBox">-</div>
-  </div>
-
-  <div class="actions compact" style="margin-top:12px">
-    <button class="btn primary smallish" type="button" data-action="shareArtAll">Condividi</button>
   </div>
 
   <!-- Stub tecnici invisibili per compatibilità col codice preesistente -->
@@ -1265,7 +1260,7 @@ body.sideMenuOpen{overflow:hidden}
     </div>
     <div style="margin-top:10px"><div class="k">Descrizione</div><textarea id="a_desc" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Descrizione articolo"></textarea></div>
     <div style="margin-top:10px"><div class="k">Disponibilità</div><label class="pill" style="justify-content:center;cursor:pointer"><input id="a_unavailable" type="checkbox" style="width:auto;margin-right:8px"/>Segna come NON DISPONIBILE</label><div class="helper" style="margin-top:6px">L'articolo viene spostato nella cartella Archivio articoli e può essere ripristinato in qualsiasi momento.</div></div>
-    <div style="margin-top:10px"><div class="k">Fornitore</div><select id="a_forn"></select><div id="a_forn_hint" class="date" style="margin-top:6px">Riconoscimento automatico dal link fornitore, sempre modificabile.</div></div>
+    <div style="display:none"><select id="a_forn"><option value=""></option></select><div id="a_forn_hint"></div></div>
   </div>
 
   <div class="formBlock varianti inputSoft">
@@ -1309,24 +1304,27 @@ body.sideMenuOpen{overflow:hidden}
   </div>
 
   <div class="formBlock prezzi inputSoft">
-    <div class="blockTitle">Prezzo fornitore</div>
+    <div class="blockTitle">Costo acquisto</div>
     <input id="a_qual" type="hidden" value=""/>
-    <div><div class="k">Prezzo fornitore EUR</div><input id="a_usd" inputmode="decimal" autocomplete="off" placeholder="Es. 48"/></div>
-    <div class="grid2" style="margin-top:10px">
-      <div class="inputSupplierPromo"><div class="k">Prezzo fornitore promo EUR</div><input id="a_usd_promo" inputmode="decimal" autocomplete="off"/></div>
-      <div style="display:flex;align-items:end"><label class="pill" style="justify-content:flex-start;cursor:pointer;width:100%"><input id="a_supplier_promo_on" type="checkbox" style="width:auto;margin-right:8px"/>Promo fornitore attiva</label></div>
+    <div>
+      <div class="k">Costo acquisto EUR</div>
+      <input id="a_usd" inputmode="decimal" autocomplete="off" placeholder="Es. 48"/>
     </div>
-    <div style="margin-top:8px"><label class="pill" style="justify-content:flex-start;cursor:pointer"><input id="a_std_cost_unknown" type="checkbox" style="width:auto;margin-right:8px"/>Prezzo fornitore non conosciuto</label></div>
-    <div id="a_cost_estimate_box" style="display:none"><input id="a_cost_estimate_value" readonly/></div>
-    <div style="margin-top:10px"><div class="k">Fine promo fornitore</div><input id="a_supplier_promo_end" type="date" autocomplete="off"/></div>
-    <div style="margin-top:8px"><label class="pill" style="justify-content:flex-start;cursor:pointer"><input id="a_supplier_date_unknown" type="checkbox" style="width:auto;margin-right:8px"/>Scadenza fornitore non comunicata</label></div>
-    <div id="a_supplier_expiry_warning" style="display:none"></div>
+    <div style="display:none">
+      <input id="a_usd_promo" value=""/>
+      <input id="a_supplier_promo_on" type="checkbox"/>
+      <input id="a_std_cost_unknown" type="checkbox"/>
+      <div id="a_cost_estimate_box"><input id="a_cost_estimate_value"/></div>
+      <input id="a_supplier_promo_end"/>
+      <input id="a_supplier_date_unknown" type="checkbox"/>
+      <div id="a_supplier_expiry_warning"></div>
+    </div>
   </div>
 
   <div class="formBlock prezzi inputSoft">
     <div class="blockTitle">Prezzo di vendita</div>
     <div class="grid2">
-      <div><div class="k">Costo fornitore</div><input id="a_eur" readonly/></div>
+      <div><div class="k">Costo acquisto</div><input id="a_eur" readonly/></div>
       <div><div class="k">Prezzo consigliato</div><input id="a_recommended" readonly/></div>
     </div>
     <div style="margin-top:10px">
@@ -1378,10 +1376,16 @@ body.sideMenuOpen{overflow:hidden}
   </div>
   <div class="hr"></div>
   <div class="h3">Spedizione</div>
-  <div style="margin-top:10px"><div class="k">Indirizzo principale per spedizione</div><textarea id="vCliShip" readonly placeholder="Shipping Address"></textarea></div>
+  <div style="margin-top:10px">
+    <div class="k">Indirizzo principale per spedizione</div>
+    <textarea id="vCliShip" readonly></textarea>
+    <div class="actions compact" style="margin-top:8px">
+      <button class="btn primary smallish" type="button" data-action="copyCliShipView">Copia</button>
+    </div>
+  </div>
   <div id="vCliAltWrap" class="mutedBox" style="display:none;margin-top:10px">
     <div class="k">Indirizzo alternativo</div>
-    <textarea id="vCliAltShip" readonly placeholder="Alternative Shipping Address" style="margin-top:6px"></textarea>
+    <textarea id="vCliAltShip" readonly style="margin-top:6px"></textarea>
     <div class="actions compact" style="margin-top:8px"><button class="btn primary smallish" type="button" data-action="copyCliAltShipView">Copia indirizzo alternativo</button></div>
   </div>
   <div class="hr"></div>
@@ -1419,7 +1423,7 @@ body.sideMenuOpen{overflow:hidden}
   </div>
   <div class="hr"></div>
   <div class="h3">Spedizione</div>
-  <div style="margin-top:10px"><div class="k">Indirizzo principale per spedizione</div><textarea id="c_ship" readonly placeholder="Shipping Address"></textarea></div>
+  <div style="margin-top:10px"><div class="k">Indirizzo principale per spedizione</div><textarea id="c_ship" readonly></textarea></div>
   <div style="margin-top:10px">
     <label class="pill" style="justify-content:flex-start;cursor:pointer"><input id="c_alt_on" type="checkbox" style="width:auto;margin-right:8px"/>Indirizzo alternativo</label>
   </div>
@@ -1438,7 +1442,7 @@ body.sideMenuOpen{overflow:hidden}
       <div><div class="k">Provincia / Regione</div><input id="c_alt_prov" autocomplete="off" autocapitalize="words" spellcheck="false"/></div>
       <div><div class="k">Paese</div><select id="c_alt_paese"></select></div>
     </div>
-    <div style="margin-top:10px"><div class="k">Anteprima indirizzo alternativo</div><textarea id="c_alt_ship" readonly placeholder="Alternative Shipping Address"></textarea></div>
+    <div style="margin-top:10px"><div class="k">Anteprima indirizzo alternativo</div><textarea id="c_alt_ship" readonly></textarea></div>
     <div class="actions compact" style="margin-top:8px"><button class="btn primary smallish" type="button" data-action="copyCliAltShip">Copia indirizzo alternativo</button></div>
   </div>
   <div class="hr"></div>
@@ -1715,43 +1719,24 @@ const MAX_ARTICLE_PHOTOS=20;
 const PROMO_EXPIRED_GRACE_DAYS=3;
 
 
+
 function buildDemoDB(){
   const createdAt=new Date().toISOString();
 
   const articoli=[
-    {id:'DEMO-A001',codice:'CAS-001',modello:'Set 6 bicchieri vetro',categoria:'Casa',descrizione:'Set di sei bicchieri trasparenti per uso quotidiano.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'6 pezzi',colore:'Trasparente',misura:'300 ml',costoEur:12,prezzoVendita:22,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A001-1.jpg','demo-photos/DEMO-A001-2.jpg','demo-photos/DEMO-A001-3.jpg','demo-photos/DEMO-A001-4.jpg','demo-photos/DEMO-A001-5.jpg','demo-photos/DEMO-A001-6.jpg']},
-    {id:'DEMO-A002',codice:'CAS-002',modello:'Organizzatore cassetti',categoria:'Casa',descrizione:'Organizer modulare per cassetti cucina o bagno.',fornitore:'Fornitore Demo',materiale:'Plastica',variante:'Modulare',colore:'Bianco',misura:'32 x 24 cm',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A002-1.jpg','demo-photos/DEMO-A002-2.jpg','demo-photos/DEMO-A002-3.jpg','demo-photos/DEMO-A002-4.jpg','demo-photos/DEMO-A002-5.jpg','demo-photos/DEMO-A002-6.jpg']},
-    {id:'DEMO-A003',codice:'CAS-003',modello:'Lampada da tavolo LED',categoria:'Casa',descrizione:'Lampada LED da tavolo con luce regolabile.',fornitore:'Fornitore Demo',materiale:'Metallo e ABS',variante:'Touch',colore:'Nero',misura:'38 cm',costoEur:19,prezzoVendita:35,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A003-1.jpg','demo-photos/DEMO-A003-2.jpg','demo-photos/DEMO-A003-3.jpg','demo-photos/DEMO-A003-4.jpg','demo-photos/DEMO-A003-5.jpg','demo-photos/DEMO-A003-6.jpg']},
-    {id:'DEMO-A004',codice:'CAS-004',modello:'Contenitori cucina 4 pezzi',categoria:'Casa',descrizione:'Set contenitori impilabili per dispensa.',fornitore:'Fornitore Demo',materiale:'Plastica alimentare',variante:'4 pezzi',colore:'Trasparente',misura:'Varie',costoEur:16,prezzoVendita:29,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A004-1.jpg','demo-photos/DEMO-A004-2.jpg','demo-photos/DEMO-A004-3.jpg','demo-photos/DEMO-A004-4.jpg','demo-photos/DEMO-A004-5.jpg','demo-photos/DEMO-A004-6.jpg']},
-    {id:'DEMO-A005',codice:'CAS-005',modello:'Tappeto bagno antiscivolo',categoria:'Casa',descrizione:'Tappeto morbido con fondo antiscivolo.',fornitore:'Fornitore Demo',materiale:'Microfibra',variante:'Rettangolare',colore:'Grigio',misura:'50 x 80 cm',costoEur:11,prezzoVendita:21,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A005-1.jpg','demo-photos/DEMO-A005-2.jpg','demo-photos/DEMO-A005-3.jpg','demo-photos/DEMO-A005-4.jpg','demo-photos/DEMO-A005-5.jpg','demo-photos/DEMO-A005-6.jpg']},
-    {id:'DEMO-A006',codice:'CAS-006',modello:'Mensola adesiva bagno',categoria:'Casa',descrizione:'Mensola senza fori per bagno o cucina.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Singola',colore:'Nero',misura:'30 cm',costoEur:14,prezzoVendita:27,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A006-1.jpg','demo-photos/DEMO-A006-2.jpg','demo-photos/DEMO-A006-3.jpg','demo-photos/DEMO-A006-4.jpg','demo-photos/DEMO-A006-5.jpg','demo-photos/DEMO-A006-6.jpg']},
-    {id:'DEMO-A007',codice:'COM-001',modello:'Borraccia termica 500 ml',categoria:'Tempo libero',descrizione:'Borraccia termica in acciaio con tappo a vite.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'500 ml',colore:'Blu',misura:'500 ml',costoEur:10,prezzoVendita:20,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A007-1.jpg','demo-photos/DEMO-A007-2.jpg','demo-photos/DEMO-A007-3.jpg','demo-photos/DEMO-A007-4.jpg','demo-photos/DEMO-A007-5.jpg','demo-photos/DEMO-A007-6.jpg']},
-    {id:'DEMO-A008',codice:'COM-002',modello:'Power bank 10000 mAh',categoria:'Elettronica',descrizione:'Batteria portatile compatta con doppia uscita USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'10000 mAh',colore:'Nero',misura:'Compatto',costoEur:18,prezzoVendita:32,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A008-1.jpg','demo-photos/DEMO-A008-2.jpg','demo-photos/DEMO-A008-3.jpg','demo-photos/DEMO-A008-4.jpg','demo-photos/DEMO-A008-5.jpg','demo-photos/DEMO-A008-6.jpg']},
-    {id:'DEMO-A009',codice:'COM-003',modello:'Auricolari Bluetooth',categoria:'Elettronica',descrizione:'Auricolari wireless con custodia di ricarica.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'Bluetooth',colore:'Bianco',misura:'Standard',costoEur:17,prezzoVendita:34,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A009-1.jpg','demo-photos/DEMO-A009-2.jpg','demo-photos/DEMO-A009-3.jpg','demo-photos/DEMO-A009-4.jpg','demo-photos/DEMO-A009-5.jpg','demo-photos/DEMO-A009-6.jpg']},
-    {id:'DEMO-A010',codice:'COM-004',modello:'Supporto smartphone da auto',categoria:'Auto',descrizione:'Supporto orientabile per bocchetta aria.',fornitore:'Fornitore Demo',materiale:'ABS e silicone',variante:'Universale',colore:'Nero',misura:'Universale',costoEur:7,prezzoVendita:15,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A010-1.jpg','demo-photos/DEMO-A010-2.jpg','demo-photos/DEMO-A010-3.jpg','demo-photos/DEMO-A010-4.jpg','demo-photos/DEMO-A010-5.jpg','demo-photos/DEMO-A010-6.jpg']},
-    {id:'DEMO-A011',codice:'COM-005',modello:'Cavo USB-C 2 metri',categoria:'Elettronica',descrizione:'Cavo rinforzato per ricarica e trasferimento dati.',fornitore:'Fornitore Demo',materiale:'Nylon',variante:'2 m',colore:'Nero',misura:'2 m',costoEur:4,prezzoVendita:9,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A011-1.jpg','demo-photos/DEMO-A011-2.jpg','demo-photos/DEMO-A011-3.jpg','demo-photos/DEMO-A011-4.jpg','demo-photos/DEMO-A011-5.jpg','demo-photos/DEMO-A011-6.jpg']},
-    {id:'DEMO-A012',codice:'COM-006',modello:'Mouse wireless',categoria:'Ufficio',descrizione:'Mouse wireless compatto per casa e ufficio.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'2.4 GHz',colore:'Grigio',misura:'Standard',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A012-1.jpg','demo-photos/DEMO-A012-2.jpg','demo-photos/DEMO-A012-3.jpg','demo-photos/DEMO-A012-4.jpg','demo-photos/DEMO-A012-5.jpg','demo-photos/DEMO-A012-6.jpg']},
-    {id:'DEMO-A013',codice:'CAS-007',modello:'Stendibiancheria pieghevole',categoria:'Casa',descrizione:'Stendibiancheria salvaspazio richiudibile.',fornitore:'Fornitore Demo',materiale:'Acciaio',variante:'Pieghevole',colore:'Bianco',misura:'Medio',costoEur:24,prezzoVendita:42,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A013-1.jpg','demo-photos/DEMO-A013-2.jpg','demo-photos/DEMO-A013-3.jpg','demo-photos/DEMO-A013-4.jpg','demo-photos/DEMO-A013-5.jpg','demo-photos/DEMO-A013-6.jpg']},
-    {id:'DEMO-A014',codice:'CAS-008',modello:'Diffusore ambiente',categoria:'Casa',descrizione:'Diffusore decorativo per essenze ambiente.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'Con bastoncini',colore:'Ambra',misura:'100 ml',costoEur:8,prezzoVendita:16,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A014-1.jpg','demo-photos/DEMO-A014-2.jpg','demo-photos/DEMO-A014-3.jpg','demo-photos/DEMO-A014-4.jpg','demo-photos/DEMO-A014-5.jpg','demo-photos/DEMO-A014-6.jpg']},
-    {id:'DEMO-A015',codice:'COM-007',modello:'Zaino porta PC 15.6',categoria:'Ufficio',descrizione:'Zaino imbottito con vano notebook e tasche accessori.',fornitore:'Fornitore Demo',materiale:'Poliestere',variante:'15.6 pollici',colore:'Nero',misura:'45 x 31 cm',costoEur:23,prezzoVendita:45,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A015-1.jpg','demo-photos/DEMO-A015-2.jpg','demo-photos/DEMO-A015-3.jpg','demo-photos/DEMO-A015-4.jpg','demo-photos/DEMO-A015-5.jpg','demo-photos/DEMO-A015-6.jpg']},
-    {id:'DEMO-A016',codice:'COM-008',modello:'Ventilatore USB da scrivania',categoria:'Ufficio',descrizione:'Ventilatore compatto alimentato via USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'3 velocità',colore:'Bianco',misura:'18 cm',costoEur:13,prezzoVendita:25,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A016-1.jpg','demo-photos/DEMO-A016-2.jpg','demo-photos/DEMO-A016-3.jpg','demo-photos/DEMO-A016-4.jpg','demo-photos/DEMO-A016-5.jpg','demo-photos/DEMO-A016-6.jpg']},
-    {id:'DEMO-A017',codice:'CAS-009',modello:'Bilancia digitale cucina',categoria:'Casa',descrizione:'Bilancia digitale compatta con display LCD.',fornitore:'Fornitore Demo',materiale:'ABS e vetro',variante:'5 kg',colore:'Argento',misura:'5 kg',costoEur:12,prezzoVendita:23,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A017-1.jpg','demo-photos/DEMO-A017-2.jpg','demo-photos/DEMO-A017-3.jpg','demo-photos/DEMO-A017-4.jpg','demo-photos/DEMO-A017-5.jpg','demo-photos/DEMO-A017-6.jpg']},
-    {id:'DEMO-A018',codice:'COM-009',modello:'Mini torcia ricaricabile',categoria:'Tempo libero',descrizione:'Torcia LED compatta ricaricabile USB.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Ricaricabile',colore:'Nero',misura:'Tascabile',costoEur:8,prezzoVendita:17,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A018-1.jpg','demo-photos/DEMO-A018-2.jpg','demo-photos/DEMO-A018-3.jpg','demo-photos/DEMO-A018-4.jpg','demo-photos/DEMO-A018-5.jpg','demo-photos/DEMO-A018-6.jpg']},
-    {id:'DEMO-A019',codice:'CAS-010',modello:'Set posate 24 pezzi',categoria:'Casa',descrizione:'Set posate per sei persone.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'24 pezzi',colore:'Argento',misura:'24 pezzi',costoEur:21,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A019-1.jpg','demo-photos/DEMO-A019-2.jpg','demo-photos/DEMO-A019-3.jpg','demo-photos/DEMO-A019-4.jpg','demo-photos/DEMO-A019-5.jpg','demo-photos/DEMO-A019-6.jpg']},
-    {id:'DEMO-A020',codice:'COM-010',modello:'Hub USB 4 porte',categoria:'Elettronica',descrizione:'Hub compatto con quattro porte USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'4 porte',colore:'Nero',misura:'Compatto',costoEur:10,prezzoVendita:19,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A020-1.jpg','demo-photos/DEMO-A020-2.jpg','demo-photos/DEMO-A020-3.jpg','demo-photos/DEMO-A020-4.jpg','demo-photos/DEMO-A020-5.jpg','demo-photos/DEMO-A020-6.jpg']}
-  ].map((a,i)=>({...a,createdAt:new Date(Date.now()-(i+4)*86400000).toISOString(),_ts:Date.now()-(i+1)*50000,photoIds:[],promoAttiva:false}));
+{"id": "DEMO-A001", "codice": "CAS-001", "modello": "Set bicchieri in vetro", "categoria": "Casa e cucina", "descrizione": "Set di bicchieri in vetro per acqua e bevande.", "materiale": "Vetro", "variante": "Set", "colore": "Trasparente", "misura": "Standard", "costoEur": 14, "prezzoVendita": 27, "demo": true, "disponibile": true, "nonDisponibile": false, "foto": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Drinking_glasses.JPG", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Set_of_1970s_BP_glasses.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/02021_set_of_drink_glasse.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/5pcs_teasake_glass_set_02.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Glass,_drinking_(set)_(AM_2014.56.39-8).jpg"]},
+{"id": "DEMO-A002", "codice": "CAS-002", "modello": "Lampada da tavolo", "categoria": "Casa e ufficio", "descrizione": "Lampada da tavolo per scrivania o comodino.", "materiale": "Metallo e plastica", "variante": "Da tavolo", "colore": "Assortito", "misura": "Standard", "costoEur": 18, "prezzoVendita": 35, "demo": true, "disponibile": true, "nonDisponibile": false, "foto": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Desk_lamp_bw.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/A_desk_lamp.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Desk_lamp.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/WLA_nyhistorical_1910_desk_lamp.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Workspace_setup_with_a_computer_monitor_and_desk_lamp_in_an_office_environment.jpg"]},
+{"id": "DEMO-A003", "codice": "ELE-001", "modello": "Mouse wireless", "categoria": "Elettronica", "descrizione": "Mouse wireless compatto per computer e notebook.", "materiale": "Plastica", "variante": "Wireless", "colore": "Assortito", "misura": "Standard", "costoEur": 11, "prezzoVendita": 22, "demo": true, "disponibile": true, "nonDisponibile": false, "foto": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/WirelessMouse.JPG", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Wireless_mouse_with_dock.png", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Wireless_mouse_logi.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Microsoft-wireless-mouse.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Logitech_M196_wireless_mouse.jpg"]},
+{"id": "DEMO-A004", "codice": "TEM-001", "modello": "Borraccia termica", "categoria": "Tempo libero", "descrizione": "Borraccia termica per bevande calde e fredde.", "materiale": "Acciaio e plastica", "variante": "Termica", "colore": "Assortito", "misura": "500 ml", "costoEur": 13, "prezzoVendita": 26, "demo": true, "disponibile": true, "nonDisponibile": false, "foto": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Vacuum_Flask.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Thermos_flask,_Model_3750,_designed_by_Raymond_Loewy,_American_Thermos_Bottle_Corporation,_1937,_chrome-plated_brass,_aluminum,_bakelite_-_Museum_f%C3%BCr_Angewandte_Kunst_K%C3%B6ln_-_Cologne,_Germany_-_DSC09512.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Thermos_flask_Termoverken.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Thermos_flask_with_hot_water.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Vacuum_flask,_basket,_cooking_Fortepan_60969.jpg"]},
+{"id": "DEMO-A005", "codice": "CAS-003", "modello": "Contenitori per alimenti", "categoria": "Casa e cucina", "descrizione": "Set di contenitori riutilizzabili per conservare alimenti.", "materiale": "Plastica e vetro", "variante": "Set", "colore": "Assortito", "misura": "Varie", "costoEur": 16, "prezzoVendita": 30, "demo": true, "disponibile": true, "nonDisponibile": false, "foto": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Rectangular_plastic_food_containers.JPG", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Glass_food_storage_container_with_Easy_Find_Lids.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Plastic_Pactiv_food_container.JPG", "https://commons.wikimedia.org/wiki/Special:Redirect/file/TupperwareLeftovers.jpg", "https://commons.wikimedia.org/wiki/Special:Redirect/file/Frischhaltedosen.jpg"]}
+  ].map((a,i)=>({...a,createdAt:new Date(Date.now()-(i+2)*86400000).toISOString(),_ts:Date.now()-(i+1)*50000,photoIds:[],promoAttiva:false}));
 
   const clienti=[
-    {id:'DEMO-C001',nome:'Cliente Demo 1',telefono:'+39 333 000 1001',indirizzo:'Via Roma 12',cap:'20121',citta:'Milano',provincia:'MI',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C002',nome:'Cliente Demo 2',telefono:'+39 333 000 1002',indirizzo:'Via Torino 8',cap:'10121',citta:'Torino',provincia:'TO',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C003',nome:'Cliente Demo 3',telefono:'+39 333 000 1003',indirizzo:'Via Napoli 45',cap:'80134',citta:'Napoli',provincia:'NA',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C004',nome:'Cliente Demo 4',telefono:'+39 333 000 1004',indirizzo:'Via Bologna 21',cap:'40121',citta:'Bologna',provincia:'BO',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C005',nome:'Cliente Demo 5',telefono:'+39 333 000 1005',indirizzo:'Via Palermo 90',cap:'90144',citta:'Palermo',provincia:'PA',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C006',nome:'Cliente Demo 6',telefono:'+39 333 000 1006',indirizzo:'Via Etnea 101',cap:'95131',citta:'Catania',provincia:'CT',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C007',nome:'Cliente Demo 7',telefono:'+39 333 000 1007',indirizzo:'Via Nazionale 33',cap:'00184',citta:'Roma',provincia:'RM',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C008',nome:'Cliente Demo 8',telefono:'+39 333 000 1008',indirizzo:'Via Firenze 14',cap:'50123',citta:'Firenze',provincia:'FI',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C009',nome:'Cliente Demo 9',telefono:'+39 333 000 1009',indirizzo:'Corso Bari 19',cap:'70122',citta:'Bari',provincia:'BA',paese:'Italia',note:'Cliente di esempio'},
-    {id:'DEMO-C010',nome:'Cliente Demo 10',telefono:'+39 333 000 1010',indirizzo:'Via Genova 52',cap:'16121',citta:'Genova',provincia:'GE',paese:'Italia',note:'Cliente di esempio'}
+{"id": "DEMO-C001", "demo": true, "nome": "Andrea Rossi", "telefono": "+39 333 100 1001", "indirizzo": "Via Roma 12", "cap": "20121", "citta": "Milano", "provincia": "MI", "paese": "Italia", "note": "Cliente di esempio"},
+{"id": "DEMO-C002", "demo": true, "nome": "Giulia Bianchi", "telefono": "+39 333 100 1002", "indirizzo": "Via Torino 25", "cap": "10121", "citta": "Torino", "provincia": "TO", "paese": "Italia", "note": "Cliente di esempio"},
+{"id": "DEMO-C003", "demo": true, "nome": "Marco Esposito", "telefono": "+39 333 100 1003", "indirizzo": "Via Toledo 80", "cap": "80134", "citta": "Napoli", "provincia": "NA", "paese": "Italia", "note": "Cliente di esempio"},
+{"id": "DEMO-C004", "demo": true, "nome": "Elena Romano", "telefono": "+39 333 100 1004", "indirizzo": "Via Libertà 44", "cap": "90144", "citta": "Palermo", "provincia": "PA", "paese": "Italia", "note": "Cliente di esempio"},
+{"id": "DEMO-C005", "demo": true, "nome": "Luca Conti", "telefono": "+39 333 100 1005", "indirizzo": "Via Nazionale 31", "cap": "00184", "citta": "Roma", "provincia": "RM", "paese": "Italia", "note": "Cliente di esempio"}
   ].map((c,i)=>({...c,email:'',facebookUrl:'',_ts:Date.now()-(i+1)*70000}));
 
   const artById=Object.fromEntries(articoli.map(a=>[a.id,a]));
@@ -1764,52 +1749,52 @@ function buildDemoDB(){
     const c=cliById[id];
     return {id:c.id,nome:c.nome,telefono:c.telefono,indirizzo:c.indirizzo,cap:c.cap,citta:c.citta,provincia:c.provincia,paese:c.paese};
   };
-  const order=(n,clienteId,stato,data,ids,tracking='',pagamento='PayPal',sconto=0)=>{
+  const order=(n,clienteId,stato,data,ids,tracking='')=>{
     const righe=ids.map(id=>row(id));
-    const subtotale=righe.reduce((s,r)=>s+Number(r.prezzo||0),0);
-    return {id:`DEMO-O${String(n).padStart(3,'0')}`,numeroOrdine:`DEMO-${String(n).padStart(4,'0')}`,clienteId,clienteSnapshot:snapshot(clienteId),stato,data,note:'Ordine dimostrativo',mis:'',modalitaPagamento:pagamento,tracking,righe,scontoCliente:Number(sconto||0),totale:Math.max(0,subtotale-Number(sconto||0)),_ts:Date.now()-n*90000};
+    const totale=righe.reduce((s,r)=>s+Number(r.prezzo||0),0);
+    return {id:`DEMO-O${String(n).padStart(3,'0')}`,demo:true,numeroOrdine:`DEMO-${String(n).padStart(4,'0')}`,clienteId,clienteSnapshot:snapshot(clienteId),stato,data,note:'Ordine di esempio',modalitaPagamento:'Carta',tracking,righe,scontoCliente:0,totale,_ts:Date.now()-n*90000};
   };
 
   const ordini=[
-    order(1,'DEMO-C001','Consegnato','2026-08-05',['DEMO-A001','DEMO-A007'],'DEMO-TRK-1001'),
-    order(2,'DEMO-C002','Consegnato','2026-08-10',['DEMO-A002'],'DEMO-TRK-1002'),
-    order(3,'DEMO-C003','Consegnato','2026-08-16',['DEMO-A003','DEMO-A011'],'DEMO-TRK-1003'),
-    order(4,'DEMO-C004','Spedito','2026-08-23',['DEMO-A004'],'DEMO-TRK-1004'),
-    order(5,'DEMO-C005','Spedito','2026-08-28',['DEMO-A005','DEMO-A012'],'DEMO-TRK-1005'),
-    order(6,'DEMO-C006','In lavorazione','2026-09-01',['DEMO-A006']),
-    order(7,'DEMO-C007','Pagato','2026-09-02',['DEMO-A008']),
-    order(8,'DEMO-C008','In attesa di pagamento','2026-09-03',['DEMO-A009']),
-    order(9,'DEMO-C009','Richiesto','2026-09-04',['DEMO-A010','DEMO-A013']),
-    order(10,'DEMO-C010','Spedito','2026-09-05',['DEMO-A014'],'DEMO-TRK-1010'),
-    order(11,'DEMO-C001','Consegnato','2026-09-06',['DEMO-A015'],'DEMO-TRK-1011'),
-    order(12,'DEMO-C003','In lavorazione','2026-09-07',['DEMO-A016','DEMO-A017']),
-    order(13,'DEMO-C005','Pagato','2026-09-08',['DEMO-A018']),
-    order(14,'DEMO-C007','Annullato','2026-09-08',['DEMO-A019'])
+    order(1,'DEMO-C001','Consegnato','2026-09-02',['DEMO-A001','DEMO-A003'],'DEMO-TRK-001'),
+    order(2,'DEMO-C002','Spedito','2026-09-05',['DEMO-A004'],'DEMO-TRK-002'),
+    order(3,'DEMO-C004','In lavorazione','2026-09-08',['DEMO-A002','DEMO-A005'])
   ];
 
   return {
-    version:'demo-2.0',
+    version:'demo-3.0',
     articoli,
     clienti,
     ordini,
-    categorie:['Casa','Elettronica','Ufficio','Tempo libero','Auto'],
-    categoryImages:{Casa:'cat-accessori.jpg',Elettronica:'cat-borse.jpg',Ufficio:'cat-cinture.jpg','Tempo libero':'cat-accessori.jpg',Auto:'cat-borse.jpg'},
+    categorie:['Casa e cucina','Casa e ufficio','Elettronica','Tempo libero'],
+    categoryImages:{},
     brands:[],
-    agenda:[
-      {id:'DEMO-T1',titolo:'Controllare ordini in lavorazione',data:'2026-09-09',ora:'10:00',done:false},
-      {id:'DEMO-T2',titolo:'Preparare aggiornamento catalogo',data:'2026-09-10',ora:'17:00',done:false}
-    ],
+    agenda:[],
     createdAt
   };
 }
 
 
+
 const COMMERCIAL_INSTALL_KEY='gestionale_commercial_install_v1';
+const COMMERCIAL_DEMO_REMOVED_KEY='gestionale_commercial_demo_removed_v1';
+const COMMERCIAL_DEMO_DATASET_KEY='gestionale_commercial_demo_dataset_v119';
+
+function emptyCommercialDB(){
+  return {version:'commercial-1.0',articoli:[],clienti:[],ordini:[],categorie:[],categoryImages:{},brands:[],agenda:[],createdAt:new Date().toISOString()};
+}
+
 function ensureCommercialFirstInstall(){
   try{
-    const done=localStorage.getItem(COMMERCIAL_INSTALL_KEY);
+    const removed=localStorage.getItem(COMMERCIAL_DEMO_REMOVED_KEY)==='1';
+    const done=localStorage.getItem(COMMERCIAL_INSTALL_KEY)==='1';
     const existing=localStorage.getItem(KEY);
-    if(!done || !existing){
+    if(!existing && removed){
+      const empty=emptyCommercialDB();
+      localStorage.setItem(KEY,JSON.stringify(empty));
+      return empty;
+    }
+    if(!existing && !done && !removed){
       const demo=buildDemoDB();
       localStorage.setItem(KEY,JSON.stringify(demo));
       localStorage.setItem(COMMERCIAL_INSTALL_KEY,'1');
@@ -1820,9 +1805,36 @@ function ensureCommercialFirstInstall(){
 }
 
 function defDB(){
+  try{
+    if(localStorage.getItem(COMMERCIAL_DEMO_REMOVED_KEY)==='1') return emptyCommercialDB();
+    if(localStorage.getItem(COMMERCIAL_INSTALL_KEY)==='1') return emptyCommercialDB();
+  }catch(_e){}
   return buildDemoDB();
 }
 
+
+
+function migrateCommercialDemoDatasetV119(){
+  try{
+    if(localStorage.getItem(COMMERCIAL_DEMO_DATASET_KEY)==='1') return;
+    if(localStorage.getItem(COMMERCIAL_DEMO_REMOVED_KEY)==='1'){
+      localStorage.setItem(COMMERCIAL_DEMO_DATASET_KEY,'1');
+      return;
+    }
+    const db=loadDB();
+    const fresh=buildDemoDB();
+    const isDemo=x=>!!x?.demo || String(x?.id||'').startsWith('DEMO-');
+    db.articoli=[...(db.articoli||[]).filter(x=>!isDemo(x)), ...fresh.articoli];
+    db.clienti=[...(db.clienti||[]).filter(x=>!isDemo(x)), ...fresh.clienti];
+    db.ordini=[...(db.ordini||[]).filter(x=>!isDemo(x)), ...fresh.ordini];
+    db.agenda=(db.agenda||[]).filter(x=>!isDemo(x));
+    db.categorie=[...new Set((db.articoli||[]).map(a=>a.categoria).filter(Boolean))];
+    db.categoryImages={};
+    saveDB(db);
+    localStorage.setItem(COMMERCIAL_INSTALL_KEY,'1');
+    localStorage.setItem(COMMERCIAL_DEMO_DATASET_KEY,'1');
+  }catch(err){ console.warn('Migrazione demo v119 fallita',err); }
+}
 
 const APP_RESET_FLAG='gestionale_commercial_reset_v1';
 const APP_RESET_OLD_KEYS=[];
@@ -3665,6 +3677,7 @@ async function getSignedFotoUrl(path, seconds=5400){
 // Ora NON genera più URL pubblici: usa link firmati sul bucket articoli privato.
 async function getPublicFotoUrl(path){
   const clean=String(path||'').trim();
+  if(/^https?:\/\//i.test(clean)) return clean;
   if(/^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) return clean;
   return await getSignedFotoUrl(path);
 }
@@ -3807,7 +3820,7 @@ async function getArticleLocalPhotoSources(a){
     for(const src of a.foto.slice(0,MAX_ARTICLE_PHOTOS)){
       const clean=String(src||'').trim();
       if(!clean) continue;
-      if(isTemporaryLocalPhotoRef(clean) || /^data:/i.test(clean) || /^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) pushLocal(clean);
+      if(isTemporaryLocalPhotoRef(clean) || /^data:/i.test(clean) || /^https?:\/\//i.test(clean) || /^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) pushLocal(clean);
     }
   }
 
@@ -3819,7 +3832,7 @@ async function getArticleCloudSourcePaths(a, opts={}){
   const seen=new Set();
   const pushCloud=(src)=>{
     const clean=String(src||'').trim();
-    if(!clean || isTemporaryLocalPhotoRef(clean) || /^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) return;
+    if(!clean || isTemporaryLocalPhotoRef(clean) || /^https?:\/\//i.test(clean) || /^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) return;
     const normalized=(/^https?:\/\//i.test(clean)) ? clean : clean.replace(/^\/+/, '').replace(new RegExp('^'+SUPABASE_BUCKET+'\/'), '');
     const key=canonicalPhotoSourceKey(normalized) || normalized;
     if(!key || seen.has(key)) return;
@@ -8370,7 +8383,7 @@ function buildShippingAddress(c, alternative=false){
   const country=alternative ? countryOriginalName(countryIt) : countryIt;
   const phone=withIntlPrefix(data.telefono||'', countryIt);
   const cityLine=[cap,city,prov].filter(Boolean).join(' ');
-  return ['Shipping Address',name,addr,cityLine,country,phone].filter(Boolean).join('\n');
+  return [name,addr,cityLine,country,phone].filter(Boolean).join('\n');
 }
 function getClientProvinceValue(){
   const country=normalizeCountryName(document.getElementById('c_paese')?.value||'Italia');
@@ -16329,7 +16342,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./service-worker.js?v=1.0.118', { updateViaCache:'none' }).then(async reg=>{
+    navigator.serviceWorker.register('./service-worker.js?v=1.0.120', { updateViaCache:'none' }).then(async reg=>{
       try{ await reg.update(); }catch(_e){}
     }).catch(err=>console.warn('Registrazione service worker fallita', err));
   }, {once:true});
@@ -16422,15 +16435,26 @@ if('serviceWorker' in navigator){
     const del=document.getElementById('deleteDemoDataBtn');
     if(del){
       del.onclick=()=>{
+        if(!confirm('Eliminare definitivamente tutti i dati di esempio?')) return;
         const db=loadDB();
-        db.articoli=(db.articoli||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
-        db.clienti=(db.clienti||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
-        db.ordini=(db.ordini||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
-        db.agenda=(db.agenda||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
+        const isDemo=x=>!!x?.demo || String(x?.id||'').startsWith('DEMO-');
+        db.articoli=(db.articoli||[]).filter(x=>!isDemo(x));
+        db.clienti=(db.clienti||[]).filter(x=>!isDemo(x));
+        db.ordini=(db.ordini||[]).filter(x=>!isDemo(x));
+        db.agenda=(db.agenda||[]).filter(x=>!isDemo(x));
         db.categorie=[...new Set((db.articoli||[]).map(a=>a.categoria).filter(Boolean))];
-        saveDB(db);
-        try{ localStorage.setItem(COMMERCIAL_INSTALL_KEY,'1'); }catch(_e){}
+        db.categoryImages={};
+        db.brands=[];
+        try{
+          localStorage.setItem(COMMERCIAL_DEMO_REMOVED_KEY,'1');
+          localStorage.setItem(COMMERCIAL_INSTALL_KEY,'1');
+          localStorage.setItem(COMMERCIAL_DEMO_DATASET_KEY,'1');
+          localStorage.setItem(KEY,JSON.stringify(normalizeDBShape(db)));
+        }catch(_e){
+          saveDB(db);
+        }
         toast('Dati di esempio eliminati');
+        setTimeout(()=>window.location.reload(),350);
       };
     }
   }
@@ -16472,6 +16496,7 @@ if('serviceWorker' in navigator){
   }
   document.addEventListener('DOMContentLoaded',()=>{
   try{ ensureCommercialFirstInstall(); }catch(_e){}
+  try{ migrateCommercialDemoDatasetV119(); }catch(_e){}
     document.getElementById('hamburgerBtn')?.addEventListener('click',(e)=>{
       e.preventDefault(); e.stopPropagation(); openMenu();
     });

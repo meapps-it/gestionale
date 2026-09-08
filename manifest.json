@@ -2,7 +2,7 @@
   "id": "./?app=gestionale",
   "name": "Gestionale",
   "short_name": "Gestionale",
-  "description": "Gestionale commerciale: ogni nuova installazione parte esclusivamente con dati di esempio.",
+  "description": "Gestionale commerciale con 5 articoli, 5 clienti e 3 ordini di esempio.",
   "lang": "it-IT",
   "dir": "ltr",
   "start_url": "./?app=gestionale#home",
@@ -64,5 +64,5 @@
       "label": "Gestionale V&G su schermo ampio"
     }
   ],
-  "version": "1.0.118-detail-restore"
+  "version": "1.0.120-generic-clean"
 }

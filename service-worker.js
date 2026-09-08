@@ -1,4 +1,4 @@
-const CACHE='gestionale-commercial-v118';
+const CACHE='gestionale-commercial-v120';
 const CORE=[
   './',
   './index.html',
