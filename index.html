@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Gestionale V&G</title>
-<meta name="description" content="Gestionale V&G per articoli, clienti, ordini, finanze, promozioni e pubblicazioni social."/>
-<meta name="application-name" content="Gestionale V&G"/>
+<title>Gestionale</title>
+<meta name="description" content="Gestionale per articoli, clienti, ordini, spedizioni, finanze, promozioni e pubblicazioni social."/>
+<meta name="application-name" content="Gestionale"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Gestionale"/>
-<link rel="manifest" href="manifest.json?v=1.0.109"/>
+<link rel="manifest" href="manifest.json?v=1.0.110-demo"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-v1-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-v1-192.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v1.png"/>
@@ -1521,10 +1521,10 @@ window.addEventListener('error',e=>{
 
 <script>
 /* ====== DB ====== */
-const KEY='vg_db_full_v7_clean';
-const CAT_IMAGES_KEY='vg_category_images_v2';
+const KEY='gestionale_demo_db_v1';
+const CAT_IMAGES_KEY='gestionale_demo_category_images_v1';
 const LEGACY_KEYS=[];
-const PHOTO_DB='vg_photos_v2_clean';
+const PHOTO_DB='gestionale_demo_photos_v1';
 const PHOTO_STORE='photos';
 const THUMB_STORE='thumbs';
 const ARTICLE_THUMB_SIZE=300;
@@ -1613,7 +1613,7 @@ const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
 const ART_DRAFT_KEY='vg_draft_art_v2_clean';
 const CLI_DRAFT_KEY='vg_draft_cli_v2_clean';
 const ORD_DRAFT_KEY='vg_draft_ord_v2_clean';
-const AGENDA_KEY='vg_dashboard_agenda_v2_clean';
+const AGENDA_KEY='gestionale_demo_agenda_v1';
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m]));
 const money=n=>Number(n||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const round5=n=>Math.round(n/5)*5;
@@ -1622,55 +1622,117 @@ const roundDown5=n=>Math.floor(Math.max(0,Number(n||0))/5)*5;
 const MAX_ARTICLE_PHOTOS=20;
 const PROMO_EXPIRED_GRACE_DAYS=3;
 
-function defDB(){
-  return {version:'v6.9',articoli:[],clienti:[],ordini:[],categorie:[],categoryImages:{},brands:[],agenda:[],createdAt:new Date().toISOString()};
+
+function buildDemoDB(){
+  const createdAt=new Date().toISOString();
+
+  const articoli=[
+    {id:'DEMO-A001',codice:'BOR-001',brand:'Atelier Demo',modello:'Borsa Aurora',categoria:'Borse',descrizione:'Borsa a mano con tracolla removibile.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Vera pelle',variante:'Media',colore:'Rosa',misura:'28 x 20 x 10 cm',costoEur:48,prezzoVendita:95,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg']},
+    {id:'DEMO-A002',codice:'BOR-002',brand:'Atelier Demo',modello:'Borsa Luna',categoria:'Borse',descrizione:'Borsa compatta da giorno.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Vera pelle',variante:'Piccola',colore:'Nero',misura:'22 x 16 x 8 cm',costoEur:42,prezzoVendita:85,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg']},
+    {id:'DEMO-A003',codice:'BOR-003',brand:'Linea Moda',modello:'Shopper Milano',categoria:'Borse',descrizione:'Shopper capiente per uso quotidiano.',fornitore:'Fornitore Demo B',qualita:'Premium',materiale:'Vera pelle',variante:'Grande',colore:'Cuoio',misura:'36 x 28 x 13 cm',costoEur:62,prezzoVendita:125,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg']},
+    {id:'DEMO-A004',codice:'BOR-004',brand:'Urban Style',modello:'Mini Bag City',categoria:'Borse',descrizione:'Mini bag con catena.',fornitore:'Fornitore Demo B',qualita:'Standard',materiale:'Pelle',variante:'Mini',colore:'Bordeaux',misura:'19 x 13 x 7 cm',costoEur:35,prezzoVendita:75,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg']},
+    {id:'DEMO-A005',codice:'CIN-001',brand:'Classic Lab',modello:'Cintura Classica 30',categoria:'Cinture',descrizione:'Cintura classica con fibbia metallica.',fornitore:'Fornitore Demo C',qualita:'Standard',materiale:'Vera pelle',variante:'Liscia',colore:'Nero',misura:'95 cm',altezzaCintura:'3 cm',hCintura:'3 cm',costoEur:18,prezzoVendita:45,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg']},
+    {id:'DEMO-A006',codice:'CIN-002',brand:'Classic Lab',modello:'Cintura Cuoio 35',categoria:'Cinture',descrizione:'Cintura in cuoio con fibbia satinata.',fornitore:'Fornitore Demo C',qualita:'Premium',materiale:'Vera pelle',variante:'Cucita',colore:'Cuoio',misura:'100 cm',altezzaCintura:'3,5 cm',hCintura:'3,5 cm',costoEur:24,prezzoVendita:55,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg']},
+    {id:'DEMO-A007',codice:'CIN-003',brand:'Urban Style',modello:'Cintura Slim',categoria:'Cinture',descrizione:'Cintura sottile da abbinare ad abiti e pantaloni.',fornitore:'Fornitore Demo C',qualita:'Standard',materiale:'Pelle',variante:'Slim',colore:'Rosso',misura:'90 cm',altezzaCintura:'2 cm',hCintura:'2 cm',costoEur:15,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg']},
+    {id:'DEMO-A008',codice:'POR-001',brand:'Atelier Demo',modello:'Portafoglio Compact',categoria:'Portafogli',descrizione:'Portafoglio compatto con porta carte.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Vera pelle',variante:'Compatto',colore:'Viola',misura:'12 x 9 cm',costoEur:22,prezzoVendita:49,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A009',codice:'POR-002',brand:'Linea Moda',modello:'Portafoglio Zip',categoria:'Portafogli',descrizione:'Portafoglio lungo con chiusura zip.',fornitore:'Fornitore Demo B',qualita:'Premium',materiale:'Vera pelle',variante:'Lungo',colore:'Beige',misura:'19 x 10 cm',costoEur:30,prezzoVendita:65,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A010',codice:'ACC-001',brand:'Urban Style',modello:'Foulard Seta',categoria:'Accessori',descrizione:'Foulard leggero fantasia.',fornitore:'Fornitore Demo D',qualita:'Standard',materiale:'Seta',variante:'Quadrato',colore:'Multicolore',misura:'70 x 70 cm',costoEur:16,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A011',codice:'ACC-002',brand:'Linea Moda',modello:'Bracciale Gold',categoria:'Accessori',descrizione:'Bracciale rigido finitura dorata.',fornitore:'Fornitore Demo D',qualita:'Standard',materiale:'Acciaio',variante:'Rigido',colore:'Oro',misura:'Unica',costoEur:14,prezzoVendita:35,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A012',codice:'ACC-003',brand:'Atelier Demo',modello:'Occhiale City',categoria:'Accessori',descrizione:'Occhiale da sole dalla linea squadrata.',fornitore:'Fornitore Demo D',qualita:'Premium',materiale:'Acetato',variante:'Squadrato',colore:'Tartarugato',misura:'Unica',costoEur:28,prezzoVendita:69,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A013',codice:'SCAR-001',brand:'Urban Style',modello:'Décolleté Roma',categoria:'Scarpe',descrizione:'Décolleté elegante con tacco medio.',fornitore:'Fornitore Demo E',qualita:'Standard',materiale:'Pelle',variante:'Tacco 7 cm',colore:'Nude',misura:'38',costoEur:40,prezzoVendita:89,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A014',codice:'SCAR-002',brand:'Linea Moda',modello:'Sneaker Street',categoria:'Scarpe',descrizione:'Sneaker casual da tutti i giorni.',fornitore:'Fornitore Demo E',qualita:'Standard',materiale:'Pelle e tessuto',variante:'Bassa',colore:'Bianco',misura:'39',costoEur:38,prezzoVendita:79,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A015',codice:'SCAR-003',brand:'Classic Lab',modello:'Mocassino Firenze',categoria:'Scarpe',descrizione:'Mocassino classico in pelle.',fornitore:'Fornitore Demo E',qualita:'Premium',materiale:'Vera pelle',variante:'Classico',colore:'Testa di moro',misura:'37',costoEur:52,prezzoVendita:110,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A016',codice:'BOR-005',brand:'Classic Lab',modello:'Borsa Weekend',categoria:'Borse',descrizione:'Borsa morbida capiente con doppio manico.',fornitore:'Fornitore Demo A',qualita:'Premium',materiale:'Vera pelle',variante:'Grande',colore:'Verde bosco',misura:'40 x 30 x 16 cm',costoEur:70,prezzoVendita:145,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg']},
+    {id:'DEMO-A017',codice:'POR-003',brand:'Urban Style',modello:'Card Holder',categoria:'Portafogli',descrizione:'Porta carte sottile da tasca.',fornitore:'Fornitore Demo B',qualita:'Standard',materiale:'Pelle',variante:'Slim',colore:'Blu',misura:'10 x 7 cm',costoEur:12,prezzoVendita:29,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A018',codice:'ACC-004',brand:'Atelier Demo',modello:'Collana Minimal',categoria:'Accessori',descrizione:'Collana sottile con piccolo pendente.',fornitore:'Fornitore Demo D',qualita:'Standard',materiale:'Acciaio',variante:'Minimal',colore:'Argento',misura:'45 cm',costoEur:11,prezzoVendita:32,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg']},
+    {id:'DEMO-A019',codice:'BOR-006',brand:'Linea Moda',modello:'Crossbody Torino',categoria:'Borse',descrizione:'Borsa crossbody compatta.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Pelle',variante:'Crossbody',colore:'Camel',misura:'24 x 17 x 9 cm',costoEur:44,prezzoVendita:92,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg']},
+    {id:'DEMO-A020',codice:'CIN-004',brand:'Atelier Demo',modello:'Cintura Elegance',categoria:'Cinture',descrizione:'Cintura elegante con fibbia dorata.',fornitore:'Fornitore Demo C',qualita:'Premium',materiale:'Vera pelle',variante:'Elegante',colore:'Bordeaux',misura:'85 cm',altezzaCintura:'2,5 cm',hCintura:'2,5 cm',costoEur:23,prezzoVendita:52,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg']}
+  ].map((a,i)=>({...a,createdAt:new Date(Date.now()-(i+4)*86400000).toISOString(),_ts:Date.now()-(i+1)*50000,photoIds:[],promoAttiva:false}));
+
+  const clienti=[
+    {id:'DEMO-C001',nome:'Giulia Rossi',telefono:'+39 333 100 1001',indirizzo:'Via Roma 12',cap:'20121',citta:'Milano',provincia:'MI',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C002',nome:'Martina Bianchi',telefono:'+39 333 100 1002',indirizzo:'Via Garibaldi 8',cap:'10122',citta:'Torino',provincia:'TO',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C003',nome:'Sara Romano',telefono:'+39 333 100 1003',indirizzo:'Via Toledo 45',cap:'80134',citta:'Napoli',provincia:'NA',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C004',nome:'Elena Conti',telefono:'+39 333 100 1004',indirizzo:'Via Indipendenza 21',cap:'40121',citta:'Bologna',provincia:'BO',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C005',nome:'Francesca Marino',telefono:'+39 333 100 1005',indirizzo:'Via Libertà 90',cap:'90144',citta:'Palermo',provincia:'PA',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C006',nome:'Chiara Greco',telefono:'+39 333 100 1006',indirizzo:'Via Etnea 101',cap:'95131',citta:'Catania',provincia:'CT',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C007',nome:'Valentina Ricci',telefono:'+39 333 100 1007',indirizzo:'Via Nazionale 33',cap:'00184',citta:'Roma',provincia:'RM',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C008',nome:'Alessia Moretti',telefono:'+39 333 100 1008',indirizzo:'Via Mazzini 14',cap:'50123',citta:'Firenze',provincia:'FI',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C009',nome:'Federica Gallo',telefono:'+39 333 100 1009',indirizzo:'Corso Cavour 19',cap:'70122',citta:'Bari',provincia:'BA',paese:'Italia',note:'Cliente demo'},
+    {id:'DEMO-C010',nome:'Ilaria Costa',telefono:'+39 333 100 1010',indirizzo:'Via XX Settembre 52',cap:'16121',citta:'Genova',provincia:'GE',paese:'Italia',note:'Cliente demo'}
+  ].map((c,i)=>({...c,email:'',facebookUrl:'',_ts:Date.now()-(i+1)*70000}));
+
+  const artById=Object.fromEntries(articoli.map(a=>[a.id,a]));
+  const cliById=Object.fromEntries(clienti.map(c=>[c.id,c]));
+  const row=(id,prezzoOverride=0)=>{
+    const a=artById[id];
+    return {
+      articoloId:a.id,codice:a.codice,modello:a.modello,brand:a.brand,categoria:a.categoria,qualita:a.qualita,
+      costoEur:Number(a.costoEur||0),prezzo:Number(prezzoOverride||a.prezzoVendita||0),colore:a.colore||'',misura:a.misura||''
+    };
+  };
+  const snapshot=id=>{
+    const c=cliById[id];
+    return {id:c.id,nome:c.nome,telefono:c.telefono,indirizzo:c.indirizzo,cap:c.cap,citta:c.citta,provincia:c.provincia,paese:c.paese};
+  };
+  const order=(n,clienteId,stato,data,ids,tracking='',pagamento='PayPal',sconto=0,note='Ordine dimostrativo')=>{
+    const righe=ids.map(id=>row(id));
+    const subtotale=righe.reduce((s,r)=>s+Number(r.prezzo||0),0);
+    return {
+      id:`DEMO-O${String(n).padStart(3,'0')}`,
+      numeroOrdine:`DEMO-${String(n).padStart(4,'0')}`,
+      clienteId,clienteSnapshot:snapshot(clienteId),stato,data,note,mis:'',
+      modalitaPagamento:pagamento,tracking,righe,scontoCliente:Number(sconto||0),
+      totale:Math.max(0,subtotale-Number(sconto||0)),_ts:Date.now()-n*90000
+    };
+  };
+
+  const ordini=[
+    order(1,'DEMO-C001','Consegnato','2026-08-05',['DEMO-A001','DEMO-A008'],'DEMO-TRK-1001','PayPal',5),
+    order(2,'DEMO-C002','Consegnato','2026-08-10',['DEMO-A005'],'DEMO-TRK-1002','Bonifico istantaneo'),
+    order(3,'DEMO-C003','Consegnato','2026-08-16',['DEMO-A013','DEMO-A010'],'DEMO-TRK-1003','Ricarica Postepay',4),
+    order(4,'DEMO-C004','Spedito','2026-08-23',['DEMO-A003'],'DEMO-TRK-1004','PayPal'),
+    order(5,'DEMO-C005','Spedito','2026-08-28',['DEMO-A006','DEMO-A018'],'DEMO-TRK-1005','Bonifico ordinario',3),
+    order(6,'DEMO-C006','In lavorazione','2026-09-01',['DEMO-A014'],'','Satispay'),
+    order(7,'DEMO-C007','Pagato','2026-09-02',['DEMO-A016'],'','PayPal',10),
+    order(8,'DEMO-C008','In attesa di pagamento','2026-09-03',['DEMO-A009'],'','Bonifico ordinario'),
+    order(9,'DEMO-C009','Richiesto','2026-09-04',['DEMO-A019','DEMO-A017'],'','PayPal'),
+    order(10,'DEMO-C010','Spedito','2026-09-05',['DEMO-A020'],'DEMO-TRK-1010','Satispay'),
+    order(11,'DEMO-C001','Consegnato','2026-09-06',['DEMO-A011'],'DEMO-TRK-1011','PayPal'),
+    order(12,'DEMO-C003','In lavorazione','2026-09-07',['DEMO-A002','DEMO-A012'],'','Bonifico istantaneo',5),
+    order(13,'DEMO-C005','Pagato','2026-09-08',['DEMO-A004'],'','Ricarica Postepay'),
+    order(14,'DEMO-C007','Annullato','2026-09-08',['DEMO-A015'],'','PayPal')
+  ];
+
+  return {
+    version:'demo-1.0',
+    articoli,
+    clienti,
+    ordini,
+    categorie:['Accessori','Borse','Cinture','Portafogli','Scarpe'],
+    categoryImages:{Borse:'cat-borse.jpg',Cinture:'cat-cinture.jpg',Accessori:'cat-accessori.jpg',Portafogli:'cat-accessori.jpg',Scarpe:'cat-accessori.jpg'},
+    brands:['Atelier Demo','Classic Lab','Linea Moda','Urban Style'],
+    agenda:[
+      {id:'DEMO-T1',titolo:'Controllare ordini in lavorazione',data:'2026-09-09',ora:'10:00',done:false},
+      {id:'DEMO-T2',titolo:'Preparare contenuti social',data:'2026-09-10',ora:'17:00',done:false}
+    ],
+    createdAt
+  };
 }
 
-const APP_RESET_FLAG='vg_build_reset_20260329_clean_v1';
-const APP_RESET_OLD_KEYS=[
-  'vg_db_full_v6','vg_db_full_v5','vg_v7_web','vanity_glamour_v9_db',
-  'vg_draft_art_v1','vg_draft_cli_v1','vg_draft_ord_v1','vg_dashboard_agenda_v1',
-  'vg_photos_v1',
-  'sb-qfjwtawsqfwmsmrrgqfi-auth-token'
-];
-const ARTICLE_PUBLISH_RESET_FLAG='vg_publish_reset_20260419_v1';
-const ARTICLE_PUBLISH_RESET_CLOUD_PENDING='vg_publish_reset_20260419_v1_cloud_pending';
+function defDB(){
+  return buildDemoDB();
+}
+
+
+const APP_RESET_FLAG='gestionale_demo_reset_v1';
+const APP_RESET_OLD_KEYS=[];
+const ARTICLE_PUBLISH_RESET_FLAG='gestionale_demo_publish_reset_v1';
+const ARTICLE_PUBLISH_RESET_CLOUD_PENDING='gestionale_demo_publish_reset_cloud_pending_v1';
 async function runOneTimeFreshReset(){
   try{
-    if(localStorage.getItem(APP_RESET_FLAG)==='1') return;
-    const keys=[];
-    try{
-      for(let i=0;i<localStorage.length;i++){
-        const k=localStorage.key(i);
-        if(k) keys.push(k);
-      }
-    }catch(_e){}
-    const shouldRemove=(k)=>{
-      const key=String(k||'');
-      if(!key) return false;
-      if(APP_RESET_OLD_KEYS.includes(key)) return true;
-      if(/^vg_db_full_/i.test(key)) return true;
-      if(/^vg_draft_(art|cli|ord)_/i.test(key)) return true;
-      if(/^vg_dashboard_agenda_/i.test(key)) return true;
-      if(/^vanity_glamour_/i.test(key)) return true;
-      if(/^sb-qfjwtawsqfwmsmrrgqfi-auth-token$/i.test(key)) return true;
-      return false;
-    };
-    keys.filter(shouldRemove).forEach(k=>{ try{ localStorage.removeItem(k); }catch(_e){} });
-    try{
-      if(typeof indexedDB!=='undefined'){
-        await Promise.all(['vg_photos_v1'].map(name=>new Promise(resolve=>{
-          try{
-            const req=indexedDB.deleteDatabase(name);
-            req.onsuccess=req.onerror=req.onblocked=()=>resolve(true);
-          }catch(_e){ resolve(true); }
-        })));
-      }
-    }catch(_e){}
-    localStorage.setItem(APP_RESET_FLAG,'1');
-  }catch(err){
-    console.warn('Reset iniziale build fallito', err);
-  }
+    if(localStorage.getItem(APP_RESET_FLAG)!=='1') localStorage.setItem(APP_RESET_FLAG,'1');
+  }catch(_e){}
 }
 
 function parseIsoDay(value=''){
@@ -8483,11 +8545,11 @@ function applyUiPrefs(){
 }
 
 /* ====== RENDER ====== */
-const SHIP_ALERTS_KEY='vg_ship_alerts_v1';
-const SHIP_SNAPSHOT_KEY='vg_ship_snapshot_v1';
-const ORDER_DELETE_TOMBSTONES_KEY='vg_order_delete_tombstones_v1';
+const SHIP_ALERTS_KEY='gestionale_demo_ship_alerts_v1';
+const SHIP_SNAPSHOT_KEY='gestionale_demo_ship_snapshot_v1';
+const ORDER_DELETE_TOMBSTONES_KEY='gestionale_demo_order_delete_tombstones_v1';
 const ORDER_DELETE_TOMBSTONE_TTL=30*24*60*60*1000;
-const ARTICLE_DELETE_TOMBSTONES_KEY='vg_article_delete_tombstones_v1';
+const ARTICLE_DELETE_TOMBSTONES_KEY='gestionale_demo_article_delete_tombstones_v1';
 const ARTICLE_DELETE_TOMBSTONE_TTL=365*24*60*60*1000;
 function normalizeArticleDeleteKeys(art){
   return {
@@ -16160,7 +16222,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./service-worker.js?v=1.0.110', { updateViaCache:'none' }).then(async reg=>{
+    navigator.serviceWorker.register('./service-worker.js?v=1.0.110-demo', { updateViaCache:'none' }).then(async reg=>{
       try{ await reg.update(); }catch(_e){}
     }).catch(err=>console.warn('Registrazione service worker fallita', err));
   }, {once:true});
