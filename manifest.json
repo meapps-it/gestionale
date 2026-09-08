@@ -2,7 +2,7 @@
   "id": "./?app=gestionale",
   "name": "Gestionale",
   "short_name": "Gestionale",
-  "description": "Gestionale per articoli, clienti, ordini, spedizioni e finanze.",
+  "description": "Gestionale per articoli, clienti, ordini, spedizioni e finanze con calcolo prezzo configurabile.",
   "lang": "it-IT",
   "dir": "ltr",
   "start_url": "./?app=gestionale#home",
@@ -64,5 +64,5 @@
       "label": "Gestionale V&G su schermo ampio"
     }
   ],
-  "version": "1.0.112-commercial-clean"
+  "version": "1.0.113-commercial-clean"
 }

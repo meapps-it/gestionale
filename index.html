@@ -588,9 +588,9 @@ window.addEventListener('error',e=>{
 
     <div class="cards dashMain">
       <div class="stat" data-action="openCurrentOrders" role="button" tabindex="0"><div class="k">Ordini in corso</div><div id="c_open_orders" class="v big">0</div><div class="sub">non ancora consegnati</div></div>
-      <div class="stat" data-go="finanze"><div class="k">Guadagno mese</div><div id="c_profit_month" class="v big">0</div><div class="sub">margine del mese corrente</div></div>
+      <div class="stat" data-go="finanze"><div class="k">Risultato mese</div><div id="c_profit_month" class="v big">0</div><div class="sub">risultato del mese corrente</div></div>
       <div class="stat" data-go="ordini"><div class="k">Media ordini</div><div id="c_avg_order" class="v big">0</div><div class="sub">valore medio per ordine</div></div>
-      <div class="stat" data-go="finanze"><div class="k">Guadagno totale</div><div id="c_profit_total" class="v big">0</div><div class="sub">margine complessivo</div></div>
+      <div class="stat" data-go="finanze"><div class="k">Risultato totale</div><div id="c_profit_total" class="v big">0</div><div class="sub">risultato complessivo</div></div>
     </div>
 
     <div class="card" style="margin-top:12px">
@@ -718,9 +718,9 @@ window.addEventListener('error',e=>{
       <div class="card"><div class="k">Fatturato ordini</div><div id="f_fatt" class="v">0</div></div>
       <div class="card"><div class="k">Incassato totale</div><div id="f_inc" class="v">0</div></div>
       <div class="card"><div class="k">Da incassare</div><div id="f_due" class="v">0</div></div>
-      <div class="card"><div class="k">Guadagno totale</div><div id="f_profit" class="v">0</div></div>
-      <div class="card"><div class="k">Guadagno mese</div><div id="f_profit_month" class="v">0</div></div>
-      <div class="card"><div class="k">Guadagno anno</div><div id="f_profit_year" class="v">0</div></div>
+      <div class="card"><div class="k">Risultato totale</div><div id="f_profit" class="v">0</div></div>
+      <div class="card"><div class="k">Risultato mese</div><div id="f_profit_month" class="v">0</div></div>
+      <div class="card"><div class="k">Risultato anno</div><div id="f_profit_year" class="v">0</div></div>
     </div>
     
     <div class="card" style="margin-top:12px">
@@ -809,7 +809,34 @@ window.addEventListener('error',e=>{
   </div>
 
   <div id="sec_impostazioni" class="section">
-    <div class="card"><div class="h2">Formula prezzo vendita</div><div class="small">Calcolo del prezzo consigliato dal prezzo fornitore in euro.</div><div class="grid2" style="margin-top:10px"><div><div class="k">Formula</div><select id="markupMode"><option value="percent">Percentuale</option><option value="rate">Tasso / moltiplicatore</option></select></div><div><div class="k">Valore</div><input id="markupValue" inputmode="decimal" placeholder="100 oppure 2"/></div></div><div id="markupExample" class="helper" style="margin-top:8px"></div><div class="actions compact" style="margin-top:10px"><button class="btn primary smallish" id="saveMarkupSettings" type="button">Salva formula</button></div></div>
+    <div class="card">
+      <div class="h2">Calcolo prezzo vendita</div>
+      <div class="small">Scegli come calcolare il prezzo di vendita a partire dal prezzo fornitore in euro.</div>
+      <div class="grid2" style="margin-top:10px">
+        <div>
+          <div class="k">Metodo</div>
+          <select id="markupMode">
+            <option value="percent">Percentuale</option>
+            <option value="rate">Tasso</option>
+          </select>
+        </div>
+        <div>
+          <div class="k">Valore</div>
+          <input id="markupValue" inputmode="decimal" placeholder="Es. 80 oppure 1.8"/>
+        </div>
+      </div>
+      <div id="markupExample" class="helper" style="margin-top:8px"></div>
+      <div class="actions compact" style="margin-top:10px">
+        <button class="btn primary smallish" id="saveMarkupSettings" type="button">Salva formula</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="h2">Dati di esempio</div>
+      <div class="small">Rimuove articoli, clienti e ordini demo. Non elimina le impostazioni dell'app.</div>
+      <div class="actions compact" style="margin-top:10px">
+        <button class="btn danger smallish" id="deleteDemoDataBtn" type="button">Elimina dati esempio</button>
+      </div>
+    </div>
     <div class="card" style="margin-top:12px"><div class="h2">Impostazioni</div>
       <div class="small">Backup e strumenti</div>
       <div class="actions">
@@ -1043,7 +1070,7 @@ window.addEventListener('error',e=>{
     <div><div class="k">Data inserimento</div><div id="vArtCreatedAt" class="t">-</div></div>
   </div>
   <div class="hr"></div>
-  <div class="h3">Prezzi e margine</div>
+  <div class="h3">Prezzi e risultato</div>
   <div class="grid2" style="margin-top:10px">
     <div><div class="k">Prezzo vendita</div><div id="vArtPrezzo" class="t">-</div></div>
     <div>
@@ -1055,7 +1082,7 @@ window.addEventListener('error',e=>{
   </div>
   <div id="vArtOfficialWrap" style="margin-top:14px;display:none;padding:12px 14px;border:1px solid #cbd5e1;border-radius:16px;background:#f8fafc">
     <div class="k" style="margin-bottom:4px">Riferimento ufficiale</div>
-    <div><div class="k">Prezzo listino ufficiale</div><div id="vArtOfficialPrice" class="t">-</div></div>
+    <div><div class="k"></div><div id="vArtOfficialPrice" class="t">-</div></div>
     <div class="helper" style="margin-top:5px">Dato informativo. Non incide sui calcoli.</div>
   </div>
   <div style="margin-top:12px"><div class="k">Descrizione</div><div id="vArtDescription" class="mutedBox">-</div><div class="actions compact" style="margin-top:8px"><button class="btn primary smallish" type="button" data-action="shareArtAll">Condividi</button></div></div>
@@ -1151,7 +1178,7 @@ window.addEventListener('error',e=>{
     </div>
     <div class="grid2" style="margin-top:10px">
       <div><div id="a_sell_label" class="k">Prezzo vendita</div><input id="a_sell" inputmode="decimal" autocomplete="off"/><div id="a_sell_hint" class="helper" style="display:none"></div></div>
-      <div><div class="k">Guadagno</div><input id="a_margin" readonly/></div>
+      <div><div class="k">Risultato</div><input id="a_margin" readonly/></div>
     </div>
     <input id="a_profit_min" type="hidden"/><input id="a_theoretical" type="hidden"/><input id="a_high_cost_rule" type="hidden"/><input id="a_final" type="hidden"/><input id="a_promo_type" type="hidden"/><div id="a_margin_pct" style="display:none"></div><div id="a_min_price_warning" style="display:none"></div><div id="a_high_cost_warning" style="display:none"></div>
   </div>
@@ -1208,8 +1235,8 @@ window.addEventListener('error',e=>{
   <div style="margin-top:10px"><div class="k">Riepilogo acquisti</div><div id="vCliOrderSummary" class="mutedBox"></div></div>
   <div style="margin-top:10px"><div class="k">Acquisti effettuati</div><div id="vCliOrders" class="list"></div></div>
   <div class="grid2" style="margin-top:10px">
-    <div><div class="k">Guadagno totale</div><div id="vCliProfitTotal" class="t pricePaid">-</div></div>
-    <div><div class="k">Guadagno annuale</div><div id="vCliProfitYear" class="t pricePaid">-</div></div>
+    <div><div class="k">Risultato totale</div><div id="vCliProfitTotal" class="t pricePaid">-</div></div>
+    <div><div class="k">Risultato annuale</div><div id="vCliProfitYear" class="t pricePaid">-</div></div>
   </div>
   <div class="actions compact bottomMini">
     <button class="btn primary smallish" type="button" data-action="copyCliShipView">Copia indirizzo</button>
@@ -1296,7 +1323,7 @@ window.addEventListener('error',e=>{
   </div>
   <div class="grid2" style="margin-top:10px">
     <div><div id="vOrdTotLabel" class="k">Totale pagato</div><div id="vOrdTot" class="t priceHot">-</div></div>
-    <div><div class="k">Guadagno</div><div id="vOrdProfit" class="t pricePaid">-</div></div>
+    <div><div class="k">Risultato</div><div id="vOrdProfit" class="t pricePaid">-</div></div>
   </div>
   <div id="vOrdCumMeta" class="small" style="margin-top:8px;display:none"></div>
   <div class="hr"></div>
@@ -1538,94 +1565,85 @@ function buildDemoDB(){
   const createdAt=new Date().toISOString();
 
   const articoli=[
-    {id:'DEMO-A001',codice:'BOR-001',modello:'Borsa Aurora',categoria:'Borse',descrizione:'Borsa a mano con tracolla removibile.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Vera pelle',variante:'Media',colore:'Rosa',misura:'28 x 20 x 10 cm',costoEur:48,prezzoVendita:95,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A002',codice:'BOR-002',modello:'Borsa Luna',categoria:'Borse',descrizione:'Borsa compatta da giorno.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Vera pelle',variante:'Piccola',colore:'Nero',misura:'22 x 16 x 8 cm',costoEur:42,prezzoVendita:85,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A003',codice:'BOR-003',modello:'Shopper Milano',categoria:'Borse',descrizione:'Shopper capiente per uso quotidiano.',fornitore:'Fornitore Demo B',qualita:'Premium',materiale:'Vera pelle',variante:'Grande',colore:'Cuoio',misura:'36 x 28 x 13 cm',costoEur:62,prezzoVendita:125,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A004',codice:'BOR-004',modello:'Mini Bag City',categoria:'Borse',descrizione:'Mini bag con catena.',fornitore:'Fornitore Demo B',qualita:'Standard',materiale:'Pelle',variante:'Mini',colore:'Bordeaux',misura:'19 x 13 x 7 cm',costoEur:35,prezzoVendita:75,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A005',codice:'CIN-001',modello:'Cintura Classica 30',categoria:'Cinture',descrizione:'Cintura classica con fibbia metallica.',fornitore:'Fornitore Demo C',qualita:'Standard',materiale:'Vera pelle',variante:'Liscia',colore:'Nero',misura:'95 cm',altezzaCintura:'3 cm',hCintura:'3 cm',costoEur:18,prezzoVendita:45,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A006',codice:'CIN-002',modello:'Cintura Cuoio 35',categoria:'Cinture',descrizione:'Cintura in cuoio con fibbia satinata.',fornitore:'Fornitore Demo C',qualita:'Premium',materiale:'Vera pelle',variante:'Cucita',colore:'Cuoio',misura:'100 cm',altezzaCintura:'3,5 cm',hCintura:'3,5 cm',costoEur:24,prezzoVendita:55,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A007',codice:'CIN-003',modello:'Cintura Slim',categoria:'Cinture',descrizione:'Cintura sottile da abbinare ad abiti e pantaloni.',fornitore:'Fornitore Demo C',qualita:'Standard',materiale:'Pelle',variante:'Slim',colore:'Rosso',misura:'90 cm',altezzaCintura:'2 cm',hCintura:'2 cm',costoEur:15,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A008',codice:'POR-001',modello:'Portafoglio Compact',categoria:'Portafogli',descrizione:'Portafoglio compatto con porta carte.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Vera pelle',variante:'Compatto',colore:'Viola',misura:'12 x 9 cm',costoEur:22,prezzoVendita:49,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A009',codice:'POR-002',modello:'Portafoglio Zip',categoria:'Portafogli',descrizione:'Portafoglio lungo con chiusura zip.',fornitore:'Fornitore Demo B',qualita:'Premium',materiale:'Vera pelle',variante:'Lungo',colore:'Beige',misura:'19 x 10 cm',costoEur:30,prezzoVendita:65,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A010',codice:'ACC-001',modello:'Foulard Seta',categoria:'Accessori',descrizione:'Foulard leggero fantasia.',fornitore:'Fornitore Demo D',qualita:'Standard',materiale:'Seta',variante:'Quadrato',colore:'Multicolore',misura:'70 x 70 cm',costoEur:16,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A011',codice:'ACC-002',modello:'Bracciale Gold',categoria:'Accessori',descrizione:'Bracciale rigido finitura dorata.',fornitore:'Fornitore Demo D',qualita:'Standard',materiale:'Acciaio',variante:'Rigido',colore:'Oro',misura:'Unica',costoEur:14,prezzoVendita:35,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A012',codice:'ACC-003',modello:'Occhiale City',categoria:'Accessori',descrizione:'Occhiale da sole dalla linea squadrata.',fornitore:'Fornitore Demo D',qualita:'Premium',materiale:'Acetato',variante:'Squadrato',colore:'Tartarugato',misura:'Unica',costoEur:28,prezzoVendita:69,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A013',codice:'SCAR-001',modello:'Décolleté Roma',categoria:'Scarpe',descrizione:'Décolleté elegante con tacco medio.',fornitore:'Fornitore Demo E',qualita:'Standard',materiale:'Pelle',variante:'Tacco 7 cm',colore:'Nude',misura:'38',costoEur:40,prezzoVendita:89,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A014',codice:'SCAR-002',modello:'Sneaker Street',categoria:'Scarpe',descrizione:'Sneaker casual da tutti i giorni.',fornitore:'Fornitore Demo E',qualita:'Standard',materiale:'Pelle e tessuto',variante:'Bassa',colore:'Bianco',misura:'39',costoEur:38,prezzoVendita:79,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A015',codice:'SCAR-003',modello:'Mocassino Firenze',categoria:'Scarpe',descrizione:'Mocassino classico in pelle.',fornitore:'Fornitore Demo E',qualita:'Premium',materiale:'Vera pelle',variante:'Classico',colore:'Testa di moro',misura:'37',costoEur:52,prezzoVendita:110,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A016',codice:'BOR-005',modello:'Borsa Weekend',categoria:'Borse',descrizione:'Borsa morbida capiente con doppio manico.',fornitore:'Fornitore Demo A',qualita:'Premium',materiale:'Vera pelle',variante:'Grande',colore:'Verde bosco',misura:'40 x 30 x 16 cm',costoEur:70,prezzoVendita:145,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A017',codice:'POR-003',modello:'Card Holder',categoria:'Portafogli',descrizione:'Porta carte sottile da tasca.',fornitore:'Fornitore Demo B',qualita:'Standard',materiale:'Pelle',variante:'Slim',colore:'Blu',misura:'10 x 7 cm',costoEur:12,prezzoVendita:29,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A018',codice:'ACC-004',modello:'Collana Minimal',categoria:'Accessori',descrizione:'Collana sottile con piccolo pendente.',fornitore:'Fornitore Demo D',qualita:'Standard',materiale:'Acciaio',variante:'Minimal',colore:'Argento',misura:'45 cm',costoEur:11,prezzoVendita:32,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A019',codice:'BOR-006',modello:'Crossbody Torino',categoria:'Borse',descrizione:'Borsa crossbody compatta.',fornitore:'Fornitore Demo A',qualita:'Standard',materiale:'Pelle',variante:'Crossbody',colore:'Camel',misura:'24 x 17 x 9 cm',costoEur:44,prezzoVendita:92,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']},
-    {id:'DEMO-A020',codice:'CIN-004',modello:'Cintura Elegance',categoria:'Cinture',descrizione:'Cintura elegante con fibbia dorata.',fornitore:'Fornitore Demo C',qualita:'Premium',materiale:'Vera pelle',variante:'Elegante',colore:'Bordeaux',misura:'85 cm',altezzaCintura:'2,5 cm',hCintura:'2,5 cm',costoEur:23,prezzoVendita:52,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']}
+    {id:'DEMO-A001',codice:'CAS-001',modello:'Set 6 bicchieri vetro',categoria:'Casa',descrizione:'Set di sei bicchieri trasparenti per uso quotidiano.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'6 pezzi',colore:'Trasparente',misura:'300 ml',costoEur:12,prezzoVendita:22,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A002',codice:'CAS-002',modello:'Organizzatore cassetti',categoria:'Casa',descrizione:'Organizer modulare per cassetti cucina o bagno.',fornitore:'Fornitore Demo',materiale:'Plastica',variante:'Modulare',colore:'Bianco',misura:'32 x 24 cm',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A003',codice:'CAS-003',modello:'Lampada da tavolo LED',categoria:'Casa',descrizione:'Lampada LED da tavolo con luce regolabile.',fornitore:'Fornitore Demo',materiale:'Metallo e ABS',variante:'Touch',colore:'Nero',misura:'38 cm',costoEur:19,prezzoVendita:35,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
+    {id:'DEMO-A004',codice:'CAS-004',modello:'Contenitori cucina 4 pezzi',categoria:'Casa',descrizione:'Set contenitori impilabili per dispensa.',fornitore:'Fornitore Demo',materiale:'Plastica alimentare',variante:'4 pezzi',colore:'Trasparente',misura:'Varie',costoEur:16,prezzoVendita:29,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-borse.jpg']},
+    {id:'DEMO-A005',codice:'CAS-005',modello:'Tappeto bagno antiscivolo',categoria:'Casa',descrizione:'Tappeto morbido con fondo antiscivolo.',fornitore:'Fornitore Demo',materiale:'Microfibra',variante:'Rettangolare',colore:'Grigio',misura:'50 x 80 cm',costoEur:11,prezzoVendita:21,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A006',codice:'CAS-006',modello:'Mensola adesiva bagno',categoria:'Casa',descrizione:'Mensola senza fori per bagno o cucina.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Singola',colore:'Nero',misura:'30 cm',costoEur:14,prezzoVendita:27,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
+    {id:'DEMO-A007',codice:'COM-001',modello:'Borraccia termica 500 ml',categoria:'Tempo libero',descrizione:'Borraccia termica in acciaio con tappo a vite.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'500 ml',colore:'Blu',misura:'500 ml',costoEur:10,prezzoVendita:20,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A008',codice:'COM-002',modello:'Power bank 10000 mAh',categoria:'Elettronica',descrizione:'Batteria portatile compatta con doppia uscita USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'10000 mAh',colore:'Nero',misura:'Compatto',costoEur:18,prezzoVendita:32,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A009',codice:'COM-003',modello:'Auricolari Bluetooth',categoria:'Elettronica',descrizione:'Auricolari wireless con custodia di ricarica.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'Bluetooth',colore:'Bianco',misura:'Standard',costoEur:17,prezzoVendita:34,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
+    {id:'DEMO-A010',codice:'COM-004',modello:'Supporto smartphone da auto',categoria:'Auto',descrizione:'Supporto orientabile per bocchetta aria.',fornitore:'Fornitore Demo',materiale:'ABS e silicone',variante:'Universale',colore:'Nero',misura:'Universale',costoEur:7,prezzoVendita:15,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
+    {id:'DEMO-A011',codice:'COM-005',modello:'Cavo USB-C 2 metri',categoria:'Elettronica',descrizione:'Cavo rinforzato per ricarica e trasferimento dati.',fornitore:'Fornitore Demo',materiale:'Nylon',variante:'2 m',colore:'Nero',misura:'2 m',costoEur:4,prezzoVendita:9,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A012',codice:'COM-006',modello:'Mouse wireless',categoria:'Ufficio',descrizione:'Mouse wireless compatto per casa e ufficio.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'2.4 GHz',colore:'Grigio',misura:'Standard',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
+    {id:'DEMO-A013',codice:'CAS-007',modello:'Stendibiancheria pieghevole',categoria:'Casa',descrizione:'Stendibiancheria salvaspazio richiudibile.',fornitore:'Fornitore Demo',materiale:'Acciaio',variante:'Pieghevole',colore:'Bianco',misura:'Medio',costoEur:24,prezzoVendita:42,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A014',codice:'CAS-008',modello:'Diffusore ambiente',categoria:'Casa',descrizione:'Diffusore decorativo per essenze ambiente.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'Con bastoncini',colore:'Ambra',misura:'100 ml',costoEur:8,prezzoVendita:16,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A015',codice:'COM-007',modello:'Zaino porta PC 15.6',categoria:'Ufficio',descrizione:'Zaino imbottito con vano notebook e tasche accessori.',fornitore:'Fornitore Demo',materiale:'Poliestere',variante:'15.6 pollici',colore:'Nero',misura:'45 x 31 cm',costoEur:23,prezzoVendita:45,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
+    {id:'DEMO-A016',codice:'COM-008',modello:'Ventilatore USB da scrivania',categoria:'Ufficio',descrizione:'Ventilatore compatto alimentato via USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'3 velocità',colore:'Bianco',misura:'18 cm',costoEur:13,prezzoVendita:25,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
+    {id:'DEMO-A017',codice:'CAS-009',modello:'Bilancia digitale cucina',categoria:'Casa',descrizione:'Bilancia digitale compatta con display LCD.',fornitore:'Fornitore Demo',materiale:'ABS e vetro',variante:'5 kg',colore:'Argento',misura:'5 kg',costoEur:12,prezzoVendita:23,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg']},
+    {id:'DEMO-A018',codice:'COM-009',modello:'Mini torcia ricaricabile',categoria:'Tempo libero',descrizione:'Torcia LED compatta ricaricabile USB.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Ricaricabile',colore:'Nero',misura:'Tascabile',costoEur:8,prezzoVendita:17,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
+    {id:'DEMO-A019',codice:'CAS-010',modello:'Set posate 24 pezzi',categoria:'Casa',descrizione:'Set posate per sei persone.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'24 pezzi',colore:'Argento',misura:'24 pezzi',costoEur:21,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
+    {id:'DEMO-A020',codice:'COM-010',modello:'Hub USB 4 porte',categoria:'Elettronica',descrizione:'Hub compatto con quattro porte USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'4 porte',colore:'Nero',misura:'Compatto',costoEur:10,prezzoVendita:19,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']}
   ].map((a,i)=>({...a,createdAt:new Date(Date.now()-(i+4)*86400000).toISOString(),_ts:Date.now()-(i+1)*50000,photoIds:[],promoAttiva:false}));
 
   const clienti=[
-    {id:'DEMO-C001',nome:'Giulia Rossi',telefono:'+39 333 100 1001',indirizzo:'Via Roma 12',cap:'20121',citta:'Milano',provincia:'MI',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C002',nome:'Martina Bianchi',telefono:'+39 333 100 1002',indirizzo:'Via Garibaldi 8',cap:'10122',citta:'Torino',provincia:'TO',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C003',nome:'Sara Romano',telefono:'+39 333 100 1003',indirizzo:'Via Toledo 45',cap:'80134',citta:'Napoli',provincia:'NA',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C004',nome:'Elena Conti',telefono:'+39 333 100 1004',indirizzo:'Via Indipendenza 21',cap:'40121',citta:'Bologna',provincia:'BO',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C005',nome:'Francesca Marino',telefono:'+39 333 100 1005',indirizzo:'Via Libertà 90',cap:'90144',citta:'Palermo',provincia:'PA',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C006',nome:'Chiara Greco',telefono:'+39 333 100 1006',indirizzo:'Via Etnea 101',cap:'95131',citta:'Catania',provincia:'CT',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C007',nome:'Valentina Ricci',telefono:'+39 333 100 1007',indirizzo:'Via Nazionale 33',cap:'00184',citta:'Roma',provincia:'RM',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C008',nome:'Alessia Moretti',telefono:'+39 333 100 1008',indirizzo:'Via Mazzini 14',cap:'50123',citta:'Firenze',provincia:'FI',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C009',nome:'Federica Gallo',telefono:'+39 333 100 1009',indirizzo:'Corso Cavour 19',cap:'70122',citta:'Bari',provincia:'BA',paese:'Italia',note:'Cliente demo'},
-    {id:'DEMO-C010',nome:'Ilaria Costa',telefono:'+39 333 100 1010',indirizzo:'Via XX Settembre 52',cap:'16121',citta:'Genova',provincia:'GE',paese:'Italia',note:'Cliente demo'}
+    {id:'DEMO-C001',nome:'Cliente Demo 1',telefono:'+39 333 000 1001',indirizzo:'Via Roma 12',cap:'20121',citta:'Milano',provincia:'MI',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C002',nome:'Cliente Demo 2',telefono:'+39 333 000 1002',indirizzo:'Via Torino 8',cap:'10121',citta:'Torino',provincia:'TO',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C003',nome:'Cliente Demo 3',telefono:'+39 333 000 1003',indirizzo:'Via Napoli 45',cap:'80134',citta:'Napoli',provincia:'NA',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C004',nome:'Cliente Demo 4',telefono:'+39 333 000 1004',indirizzo:'Via Bologna 21',cap:'40121',citta:'Bologna',provincia:'BO',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C005',nome:'Cliente Demo 5',telefono:'+39 333 000 1005',indirizzo:'Via Palermo 90',cap:'90144',citta:'Palermo',provincia:'PA',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C006',nome:'Cliente Demo 6',telefono:'+39 333 000 1006',indirizzo:'Via Etnea 101',cap:'95131',citta:'Catania',provincia:'CT',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C007',nome:'Cliente Demo 7',telefono:'+39 333 000 1007',indirizzo:'Via Nazionale 33',cap:'00184',citta:'Roma',provincia:'RM',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C008',nome:'Cliente Demo 8',telefono:'+39 333 000 1008',indirizzo:'Via Firenze 14',cap:'50123',citta:'Firenze',provincia:'FI',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C009',nome:'Cliente Demo 9',telefono:'+39 333 000 1009',indirizzo:'Corso Bari 19',cap:'70122',citta:'Bari',provincia:'BA',paese:'Italia',note:'Cliente di esempio'},
+    {id:'DEMO-C010',nome:'Cliente Demo 10',telefono:'+39 333 000 1010',indirizzo:'Via Genova 52',cap:'16121',citta:'Genova',provincia:'GE',paese:'Italia',note:'Cliente di esempio'}
   ].map((c,i)=>({...c,email:'',facebookUrl:'',_ts:Date.now()-(i+1)*70000}));
 
   const artById=Object.fromEntries(articoli.map(a=>[a.id,a]));
   const cliById=Object.fromEntries(clienti.map(c=>[c.id,c]));
-  const row=(id,prezzoOverride=0)=>{
+  const row=(id)=>{
     const a=artById[id];
-    return {
-      articoloId:a.id,codice:a.codice,modello:a.modello,brand:a.brand,categoria:a.categoria,qualita:a.qualita,
-      costoEur:Number(a.costoEur||0),prezzo:Number(prezzoOverride||a.prezzoVendita||0),colore:a.colore||'',misura:a.misura||''
-    };
+    return {articoloId:a.id,codice:a.codice,modello:a.modello,categoria:a.categoria,costoEur:Number(a.costoEur||0),prezzo:Number(a.prezzoVendita||0),colore:a.colore||'',misura:a.misura||''};
   };
   const snapshot=id=>{
     const c=cliById[id];
     return {id:c.id,nome:c.nome,telefono:c.telefono,indirizzo:c.indirizzo,cap:c.cap,citta:c.citta,provincia:c.provincia,paese:c.paese};
   };
-  const order=(n,clienteId,stato,data,ids,tracking='',pagamento='PayPal',sconto=0,note='Ordine dimostrativo')=>{
+  const order=(n,clienteId,stato,data,ids,tracking='',pagamento='PayPal',sconto=0)=>{
     const righe=ids.map(id=>row(id));
     const subtotale=righe.reduce((s,r)=>s+Number(r.prezzo||0),0);
-    return {
-      id:`DEMO-O${String(n).padStart(3,'0')}`,
-      numeroOrdine:`DEMO-${String(n).padStart(4,'0')}`,
-      clienteId,clienteSnapshot:snapshot(clienteId),stato,data,note,mis:'',
-      modalitaPagamento:pagamento,tracking,righe,scontoCliente:Number(sconto||0),
-      totale:Math.max(0,subtotale-Number(sconto||0)),_ts:Date.now()-n*90000
-    };
+    return {id:`DEMO-O${String(n).padStart(3,'0')}`,numeroOrdine:`DEMO-${String(n).padStart(4,'0')}`,clienteId,clienteSnapshot:snapshot(clienteId),stato,data,note:'Ordine dimostrativo',mis:'',modalitaPagamento:pagamento,tracking,righe,scontoCliente:Number(sconto||0),totale:Math.max(0,subtotale-Number(sconto||0)),_ts:Date.now()-n*90000};
   };
 
   const ordini=[
-    order(1,'DEMO-C001','Consegnato','2026-08-05',['DEMO-A001','DEMO-A008'],'DEMO-TRK-1001','PayPal',5),
-    order(2,'DEMO-C002','Consegnato','2026-08-10',['DEMO-A005'],'DEMO-TRK-1002','Bonifico istantaneo'),
-    order(3,'DEMO-C003','Consegnato','2026-08-16',['DEMO-A013','DEMO-A010'],'DEMO-TRK-1003','Ricarica Postepay',4),
-    order(4,'DEMO-C004','Spedito','2026-08-23',['DEMO-A003'],'DEMO-TRK-1004','PayPal'),
-    order(5,'DEMO-C005','Spedito','2026-08-28',['DEMO-A006','DEMO-A018'],'DEMO-TRK-1005','Bonifico ordinario',3),
-    order(6,'DEMO-C006','In lavorazione','2026-09-01',['DEMO-A014'],'','Satispay'),
-    order(7,'DEMO-C007','Pagato','2026-09-02',['DEMO-A016'],'','PayPal',10),
-    order(8,'DEMO-C008','In attesa di pagamento','2026-09-03',['DEMO-A009'],'','Bonifico ordinario'),
-    order(9,'DEMO-C009','Richiesto','2026-09-04',['DEMO-A019','DEMO-A017'],'','PayPal'),
-    order(10,'DEMO-C010','Spedito','2026-09-05',['DEMO-A020'],'DEMO-TRK-1010','Satispay'),
-    order(11,'DEMO-C001','Consegnato','2026-09-06',['DEMO-A011'],'DEMO-TRK-1011','PayPal'),
-    order(12,'DEMO-C003','In lavorazione','2026-09-07',['DEMO-A002','DEMO-A012'],'','Bonifico istantaneo',5),
-    order(13,'DEMO-C005','Pagato','2026-09-08',['DEMO-A004'],'','Ricarica Postepay'),
-    order(14,'DEMO-C007','Annullato','2026-09-08',['DEMO-A015'],'','PayPal')
+    order(1,'DEMO-C001','Consegnato','2026-08-05',['DEMO-A001','DEMO-A007'],'DEMO-TRK-1001'),
+    order(2,'DEMO-C002','Consegnato','2026-08-10',['DEMO-A002'],'DEMO-TRK-1002'),
+    order(3,'DEMO-C003','Consegnato','2026-08-16',['DEMO-A003','DEMO-A011'],'DEMO-TRK-1003'),
+    order(4,'DEMO-C004','Spedito','2026-08-23',['DEMO-A004'],'DEMO-TRK-1004'),
+    order(5,'DEMO-C005','Spedito','2026-08-28',['DEMO-A005','DEMO-A012'],'DEMO-TRK-1005'),
+    order(6,'DEMO-C006','In lavorazione','2026-09-01',['DEMO-A006']),
+    order(7,'DEMO-C007','Pagato','2026-09-02',['DEMO-A008']),
+    order(8,'DEMO-C008','In attesa di pagamento','2026-09-03',['DEMO-A009']),
+    order(9,'DEMO-C009','Richiesto','2026-09-04',['DEMO-A010','DEMO-A013']),
+    order(10,'DEMO-C010','Spedito','2026-09-05',['DEMO-A014'],'DEMO-TRK-1010'),
+    order(11,'DEMO-C001','Consegnato','2026-09-06',['DEMO-A015'],'DEMO-TRK-1011'),
+    order(12,'DEMO-C003','In lavorazione','2026-09-07',['DEMO-A016','DEMO-A017']),
+    order(13,'DEMO-C005','Pagato','2026-09-08',['DEMO-A018']),
+    order(14,'DEMO-C007','Annullato','2026-09-08',['DEMO-A019'])
   ];
 
   return {
-    version:'demo-1.0',
+    version:'demo-2.0',
     articoli,
     clienti,
     ordini,
-    categorie:['Accessori','Borse','Cinture','Portafogli','Scarpe'],
-    categoryImages:{Borse:'cat-borse.jpg',Cinture:'cat-cinture.jpg',Accessori:'cat-accessori.jpg',Portafogli:'cat-accessori.jpg',Scarpe:'cat-accessori.jpg'},
+    categorie:['Casa','Elettronica','Ufficio','Tempo libero','Auto'],
+    categoryImages:{Casa:'cat-accessori.jpg',Elettronica:'cat-borse.jpg',Ufficio:'cat-cinture.jpg','Tempo libero':'cat-accessori.jpg',Auto:'cat-borse.jpg'},
     brands:[],
     agenda:[
       {id:'DEMO-T1',titolo:'Controllare ordini in lavorazione',data:'2026-09-09',ora:'10:00',done:false},
-      {id:'DEMO-T2',titolo:'Preparare contenuti social',data:'2026-09-10',ora:'17:00',done:false}
+      {id:'DEMO-T2',titolo:'Preparare aggiornamento catalogo',data:'2026-09-10',ora:'17:00',done:false}
     ],
     createdAt
   };
@@ -5054,7 +5072,7 @@ function renderOrderMinimumWarning(total){
     const shownDeficit=roundDown5(deficit);
     el.style.display='block';
     el.style.borderColor='#dc2626'; el.style.background='#fef2f2'; el.style.color='#991b1b';
-    el.textContent=`⚠️ Sotto margine: minimo ${Math.round(info.minimum)} €. Sei sotto di ${Math.round(shownDeficit)} €.`;
+    el.textContent=`⚠️ Sotto risultato: minimo ${Math.round(info.minimum)} €. Sei sotto di ${Math.round(shownDeficit)} €.`;
   }else{
     el.style.display='none'; el.textContent='';
   }
@@ -5109,9 +5127,9 @@ setInterval(setDateLine, 1000); document.addEventListener('DOMContentLoaded', se
 
 /* ====== QUALITY + PRICE RULES ====== */
 const SUPPLIER_DEFAULT_QUALITY=Object.freeze({
-  Daniel:'Top Quality 🥈',
-  Jessica:'Top Quality 🥈',
-  Jayden:'Original Quality 🥇'
+  Daniel:' 🥈',
+  Jessica:' 🥈',
+  Jayden:' 🥇'
 });
 const SUPPLIER_PRESETS=Object.freeze(['Daniel','Jayden','Jessica']);
 let currentSupplierManualOverride=false;
@@ -5164,7 +5182,7 @@ function getEffectiveArticleQuality(article={}){
   const supplier=getEffectiveArticleSupplier(article);
   const supplierDefault=getDefaultQualityFromSupplier(supplier);
   // Per i fornitori riconosciuti la qualità è vincolata al fornitore:
-  // Daniel/Jessica = Top Quality, Jayden = Original Quality.
+  // Daniel/Jessica = , Jayden = .
   if(supplierDefault) return supplierDefault;
   return normalizeSpaceText(article?.qualita||article?.qualità||'');
 }
@@ -5327,7 +5345,7 @@ function calcSellFromEurCost(cost, qual){
   const marg=recommendedProfitByQuality(costo,quality);
   const theoretical=roundDown5(costo+marg);
   // Il prezzo teorico è il pavimento economico: costo + guadagno minimo.
-  // Sull'Original Quality aggiungiamo 10 € al prezzo consigliato per lasciare
+  // Sull' aggiungiamo 10 € al prezzo consigliato per lasciare
   // un piccolo spazio di trattativa senza intaccare il guadagno minimo.
   const buffer=quality==='ORIGINALE' ? 10 : 0;
   return {costo,sell:roundUp5(theoretical+buffer),marg,theoretical,minPrice:theoretical,buffer,highCost:(quality==='ORIGINALE'?costo>350:costo>220)};
@@ -5380,7 +5398,7 @@ function articleCostEstimateSignature(input={}){
 function estimateArticleCostFromHistory(input={},db=loadDB(),excludeId=''){
   const category=normalizeTextKey(input?.categoria||'');
   const quality=qualityPricingKey(input?.qualita||'');
-  if(!quality) return {ok:false,reason:'Indica prima la qualità: Top Quality e Original Quality non devono essere mescolate.'};
+  if(!quality) return {ok:false,reason:'Indica prima la qualità:  e  non devono essere mescolate.'};
 
   const supplier=normalizeTextKey(input?.fornitore||'');
   const brand=normalizeTextKey(input?.brand||'');
@@ -5390,7 +5408,7 @@ function estimateArticleCostFromHistory(input={},db=loadDB(),excludeId=''){
   for(const art of (db?.articoli||[])){
     if(String(art?.id||'')===String(excludeId||'')) continue;
 
-    // Qualità resta un vincolo assoluto: mai mischiare Top e Original.
+    //  resta un vincolo assoluto: mai mischiare Top e Original.
     if(qualityPricingKey(getEffectiveArticleQuality(art))!==quality) continue;
 
     const cost=realHistoricalArticleCost(art);
@@ -7117,7 +7135,7 @@ function facebookVarietyBlocks(a){
     "📩 Info e colori in privato.",
     "📩 Info e misure in privato.",
     "📩 Dettagli e qualità in privato.",
-    "📩 Qualità e foto in privato.",
+    "📩  e foto in privato.",
     "📩 Foto prima dell’ordine.",
     "📩 Dettagli prima dell’ordine.",
     "📩 Info prima dell’ordine.",
@@ -7604,7 +7622,7 @@ function facebookVarietyBlocks(a){
     `Con queste misure resta portabile e gradevole addosso.`
   );
   if(qual) add(accents,
-    `Qualità ${String(qual).toLowerCase()} con finiture curate e una resa pulita.`,
+    ` ${String(qual).toLowerCase()} con finiture curate e una resa pulita.`,
     `La qualità ${String(qual).toLowerCase()} si nota soprattutto nei dettagli.`,
     `Finiture curate e qualità ${String(qual).toLowerCase()} per un effetto più elegante.`
   );
@@ -7689,7 +7707,7 @@ function buildPostFacebookBase(a, opts={}){
     "Recensioni visibili.",
     "Foto reali disponibili.",
     "Foto e dettagli prima dell’ordine.",
-    "Qualità e tempi indicati prima dell’ordine."
+    " e tempi indicati prima dell’ordine."
   ];
 
   const lines=[...promoPostIntroLines(a)];
@@ -8878,7 +8896,7 @@ function buildDashboardTips(db, salesPerWeek, openOrders, promoCount){
     }
   }else{
     if(openOrders>=6){
-      behavior='Stai andando bene, ma hai carico alto: proteggi il margine e chiudi gli ordini aperti prima di spingere troppo.';
+      behavior='Stai andando bene, ma hai carico alto: proteggi il risultato e chiudi gli ordini aperti prima di spingere troppo.';
       action='ordini';
     }else{
       behavior='Stai andando bene: continua sui modelli che girano e non abbassare i prezzi per sport.';
@@ -9699,9 +9717,9 @@ function articleMarginInfo(a){
   const pct=(sale>0&&current>0)?Math.round((current/sale)*100):0;
   const target=Math.max(1,Number(base.marg||0));
   const ratio=current/target;
-  if(ratio>=0.92) return {tone:'good',label:estimated?'Buon margine stimato':'Buon margine',amount:current,pct,estimated};
-  if(ratio>=0.75) return {tone:'mid',label:estimated?'Margine stimato nella media':'Margine nella media',amount:current,pct,estimated};
-  return {tone:'low',label:estimated?'Margine stimato al limite':'Margine al limite',amount:current,pct,estimated};
+  if(ratio>=0.92) return {tone:'good',label:estimated?'Buon risultato stimato':'Buon risultato',amount:current,pct,estimated};
+  if(ratio>=0.75) return {tone:'mid',label:estimated?'Risultato stimato nella media':'Risultato nella media',amount:current,pct,estimated};
+  return {tone:'low',label:estimated?'Risultato stimato al limite':'Risultato al limite',amount:current,pct,estimated};
 }
 function articleCostInfo(a){
   const usd=Number(a?.costoUsd||0);
@@ -9741,7 +9759,7 @@ function articleMinimumPriceWarningHtml(a){
   const deficit=minimum-activePrice;
   if(deficit<5) return '';
   const shownDeficit=roundDown5(deficit);
-  return `<div style="margin-top:10px;padding:10px 12px;border:1px solid #dc2626;border-radius:12px;background:#fef2f2;color:#991b1b;font-weight:900;line-height:1.35">⚠️ Sotto margine: minimo ${Math.round(minimum)} €. Sei sotto di ${Math.round(shownDeficit)} €.</div>`;
+  return `<div style="margin-top:10px;padding:10px 12px;border:1px solid #dc2626;border-radius:12px;background:#fef2f2;color:#991b1b;font-weight:900;line-height:1.35">⚠️ Sotto risultato: minimo ${Math.round(minimum)} €. Sei sotto di ${Math.round(shownDeficit)} €.</div>`;
 }
 function articleUnderMarginListBadgeHtml(a){
   const costInfo=articleCostInfo(a);
@@ -9761,7 +9779,7 @@ function articleMarginInfoHtml(a){
   const info=articleMarginInfo(a);
   const costHtml=articleCostInfoHtml(a);
   const minHtml=articleMinimumPriceWarningHtml(a);
-  if(!info) return `<div class="pill">Margine non disponibile</div><div class="marginMeta">Serve un costo reale oppure una stima accettata.</div>${costHtml}${minHtml}`;
+  if(!info) return `<div class="pill">Risultato non disponibile</div><div class="marginMeta">Serve un costo reale oppure una stima accettata.</div>${costHtml}${minHtml}`;
   const toneClass=info.tone==='good'?'marginGood':(info.tone==='mid'?'marginMid':'marginLow');
   const pctText=info.pct?` • ${info.pct}%`:'';
   const note=info.estimated?'<div class="marginMeta estimatedCostText">Valore ipotetico: non è guadagno verificato.</div>':'';
@@ -10357,7 +10375,7 @@ function renderOrd(){
         <div class="s">${esc(o.data||'')}${paymentText?` • ${esc(paymentText)}`:''}${o.mis?` • Mis. ${esc(o.mis)}`:''}</div>
         ${measureWarningHtml}
         ${articlesHtml}
-        <div class="s" style="margin-top:7px"><b>${esc(totalLabel)}:</b> <span class="${totalCls}">${money(paidTotal)}</span>${profitVal==null?' • <span class="estimatedCostText">Guadagno non disponibile</span>':` • Guadagno <span class="pricePaid">${money(profitVal)}</span>`}</div>
+        <div class="s" style="margin-top:7px"><b>${esc(totalLabel)}:</b> <span class="${totalCls}">${money(paidTotal)}</span>${profitVal==null?' • <span class="estimatedCostText">Risultato non disponibile</span>':` • Risultato <span class="pricePaid">${money(profitVal)}</span>`}</div>
         ${o.tracking?`<div class="s" style="margin-top:4px"><b>Tracking:</b> ${esc(o.tracking)}</div>`:''}
       </div>
       ${orderStatusBadgeHtml(o.stato||'-')}
@@ -10375,7 +10393,7 @@ async function renderStorageInfo(){
   if(!box) return;
   try{
     const est=await estimateStorageInfo();
-    if(!est || !est.quota){ box.textContent='Il browser non espone il limite preciso, ma con IndexedDB hai molto più margine rispetto a localStorage.'; return; }
+    if(!est || !est.quota){ box.textContent='Il browser non espone il limite preciso, ma con IndexedDB hai molto più risultato rispetto a localStorage.'; return; }
     const perc=((est.usage/est.quota)*100).toFixed(1);
     box.innerHTML=`<div class="mutedBox">Usati <b>${fmtMB(est.usage)}</b> su circa <b>${fmtMB(est.quota)}</b> disponibili (${perc}%).</div>`;
   }catch(e){ box.textContent='Impossibile leggere la quota del browser.'; }
@@ -10696,8 +10714,8 @@ function renderFinanze(){
 
   document.getElementById('finCommercialCards').innerHTML=[
     ['Ordini validi',validOrders.length],['Articoli venduti',rows.length],['Clienti distinti',clientIds.size],['Clienti ricorrenti',recurring],
-    ['Costo complessivo',money(totalCost)],['Guadagno medio/articolo',money(validEconomicRows.length?profit/validEconomicRows.length:0)],
-    ['Margine sul venduto',marginPct.toFixed(1)+'%'],['Sconti concessi',money(discounts)],['Valore medio ordine',money(validOrders.length?fatt/validOrders.length:0)]
+    ['Costo complessivo',money(totalCost)],['Risultato medio/articolo',money(validEconomicRows.length?profit/validEconomicRows.length:0)],
+    ['Percentuale sul venduto',marginPct.toFixed(1)+'%'],['Sconti concessi',money(discounts)],['Valore medio ordine',money(validOrders.length?fatt/validOrders.length:0)]
   ].map(([k,v])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
 
   const quality={Originale:{qty:0,rev:0,cost:0},Standard:{qty:0,rev:0,cost:0},Incerta:{qty:0,rev:0,cost:0}};
@@ -10795,7 +10813,7 @@ function renderFinanze(){
   document.getElementById('finTrendChart').innerHTML=renderBarChart(trend,true);
   const incMonth=allOrders.filter(sameMonth).reduce((s,o)=>s+orderIncassato(o),0);
   const fattMonth=allOrders.filter(sameMonth).reduce((s,o)=>s+Number(o.totale||0),0);
-  document.getElementById('finYearChart').innerHTML=`<div class="smallGrid"><div class="mutedBox"><div class="k">Incassato mese corrente</div><div class="v">${money(incMonth)}</div><div class="small">Fatturato mese ${money(fattMonth)}</div></div><div class="mutedBox"><div class="k">Margine medio ordine</div><div class="v">${money(validOrders.length?profit/validOrders.length:0)}</div><div class="small">Su ${validOrders.length} ordini validi</div></div></div>`;
+  document.getElementById('finYearChart').innerHTML=`<div class="smallGrid"><div class="mutedBox"><div class="k">Incassato mese corrente</div><div class="v">${money(incMonth)}</div><div class="small">Fatturato mese ${money(fattMonth)}</div></div><div class="mutedBox"><div class="k">Risultato medio ordine</div><div class="v">${money(validOrders.length?profit/validOrders.length:0)}</div><div class="small">Su ${validOrders.length} ordini validi</div></div></div>`;
   renderStorageInfo();
 }
 
@@ -11644,7 +11662,7 @@ function renderArtAutoFields(){
   document.getElementById('a_margin').value = margin ? money(margin) : '';
   document.getElementById('a_margin_pct').textContent='';
   const highRule=document.getElementById('a_high_cost_rule');
-  if(highRule){ const qKey=qualityPricingKey(qual); highRule.value=qKey==='ORIGINALE'?'Soglie Original Quality':(qKey==='STANDARD'?'Soglie Top Quality':''); }
+  if(highRule){ const qKey=qualityPricingKey(qual); highRule.value=qKey==='ORIGINALE'?'Soglie ':(qKey==='STANDARD'?'Soglie ':''); }
   const minWarn=document.getElementById('a_min_price_warning');
   if(minWarn){
     const minPrice=roundDown5(Number(theoreticalSell||0));
@@ -11655,7 +11673,7 @@ function renderArtAutoFields(){
       minWarn.style.borderColor='#dc2626';
       minWarn.style.background='#fef2f2';
       minWarn.style.color='#991b1b';
-      minWarn.textContent=`⚠️ Sotto margine: minimo ${Math.round(minPrice)} €. Sei sotto di ${Math.round(shownDeficit)} €.`;
+      minWarn.textContent=`⚠️ Sotto risultato: minimo ${Math.round(minPrice)} €. Sei sotto di ${Math.round(shownDeficit)} €.`;
     }else{ minWarn.style.display='none'; minWarn.textContent=''; }
   }
   const highWarn=document.getElementById('a_high_cost_warning');
@@ -13703,7 +13721,7 @@ function getSearchSuggestions(kind, query){
       add(displayCategoryValue(a.categoria));
       add(articleQualityLabel(a));
       const quality=articleQualityLabel(a);
-      add(quality ? `Qualità ${quality}` : '');
+      add(quality ? ` ${quality}` : '');
     });
   }
   if(kind==='cli' || kind==='orderCli'){
@@ -16153,7 +16171,7 @@ if('serviceWorker' in navigator){
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
 })();
 </script>
-<script>(function(){const K='gestionale_markup_rule_v1';function rule(){try{const x=JSON.parse(localStorage.getItem(K)||'{}');const mode=x.mode==='rate'?'rate':'percent';const value=Number(x.value);return{mode,value:value>0?value:(mode==='rate'?2:100)}}catch(e){return{mode:'percent',value:100}}}function sell(c){c=Number(c||0);if(!(c>0))return 0;const r=rule();return r.mode==='rate'?c*r.value:c*(1+r.value/100)}window.getEffectiveArticleQuality=()=>'';window.articleQualityLabel=()=>'';window.qualityPricingKey=()=>'';window.recommendedProfitByQuality=(c)=>Math.max(0,sell(c)-Number(c||0));window.calcSellFromEurCost=(c)=>{c=Number(c||0);if(!(c>0))return{costo:0,sell:0,marg:0,theoretical:0,minPrice:0,buffer:0,highCost:false};const p=sell(c);return{costo:c,sell:p,marg:p-c,theoretical:p,minPrice:p,buffer:0,highCost:false}};window.calcFromUsd=(v)=>window.calcSellFromEurCost(Number(v||0));const oldOpen=window.openArtView;if(typeof oldOpen==='function')window.openArtView=async function(id){const r=await oldOpen(id);const db=loadDB(),a=(db.articoli||[]).find(x=>x.id===currentArtId),el=document.getElementById('vArtDescription');if(el)el.textContent=a?.descrizione||a?.desc||'-';return r};window.shareArtAll=async function(){const db=loadDB(),a=(db.articoli||[]).find(x=>x.id===currentArtId);if(!a)return;const text=[a.modello||a.codice||'Articolo',a.descrizione||a.desc||'',currentPrice(a)?'Prezzo: '+money(currentPrice(a)):'' ].filter(Boolean).join('\n\n');try{let ctx=getPreparedCurrentArticlePhotoContext();if(!ctx)ctx=await prepareArticlePhotoShareContext(a);let files=ctx?(getCachedArticlePhotoFilesForCtx(ctx)||[]):[];if(ctx&&!areCachedArticlePhotoFilesComplete(ctx))files=await warmCurrentArticlePhotoShare(ctx,{silent:true});const p={title:a.modello||a.codice||'Articolo',text};if(files.length&&(!navigator.canShare||navigator.canShare({files})))p.files=files;if(navigator.share)await navigator.share(p);else await copyText(text,'Descrizione copiata')}catch(e){if(!isShareAbortError(e))console.warn(e)}};function ui(){const m=document.getElementById('markupMode'),v=document.getElementById('markupValue'),e=document.getElementById('markupExample'),b=document.getElementById('saveMarkupSettings');if(!m||!v)return;const r=rule();m.value=r.mode;v.value=r.value;const refresh=()=>{const n=Number(v.value||0);e.textContent=m.value==='rate'?`Esempio: 50 € × ${n||0} = ${(50*(n||0)).toFixed(2)} €`:`Esempio: 50 € + ${n||0}% = ${(50*(1+(n||0)/100)).toFixed(2)} €`};m.onchange=refresh;v.oninput=refresh;refresh();if(b)b.onclick=()=>{const n=Number(v.value);if(!(n>0)){toast('Inserisci un valore maggiore di zero');return}localStorage.setItem(K,JSON.stringify({mode:m.value==='rate'?'rate':'percent',value:n}));refresh();toast('Formula salvata')}}document.addEventListener('DOMContentLoaded',ui);setTimeout(ui,250)})();</script>
+
 <script>(function(){
   function cleanCommercialUi(){
     const hideIds=['qArtBrand','vArtBrand','vArtOfficialPrice','vArtSupplierLink','a_brand','a_brand_custom','a_official_price','a_forn_link','a_promo_on','a_promo_price','a_promo_date','a_promo_summary'];
@@ -16162,5 +16180,85 @@ if('serviceWorker' in navigator){
   document.addEventListener('DOMContentLoaded',cleanCommercialUi);
   setTimeout(cleanCommercialUi,250);
 })();</script>
+<script>
+(function(){
+  const K='gestionale_markup_rule_v1';
+
+  function rule(){
+    try{
+      const x=JSON.parse(localStorage.getItem(K)||'{}');
+      const mode=x.mode==='rate'?'rate':'percent';
+      const value=Number(x.value);
+      return {mode,value:value>0?value:(mode==='rate'?2:100)};
+    }catch(_e){
+      return {mode:'percent',value:100};
+    }
+  }
+
+  function sell(cost){
+    const c=Number(cost||0);
+    if(!(c>0)) return 0;
+    const r=rule();
+    return r.mode==='rate' ? c*r.value : c*(1+r.value/100);
+  }
+
+  window.getEffectiveArticleQuality=()=>''; 
+  window.articleQualityLabel=()=>''; 
+  window.qualityPricingKey=()=>''; 
+  window.recommendedProfitByQuality=(c)=>Math.max(0,sell(c)-Number(c||0));
+  window.calcSellFromEurCost=(c)=>{
+    c=Number(c||0);
+    if(!(c>0)) return {costo:0,sell:0,marg:0,theoretical:0,minPrice:0,buffer:0,highCost:false};
+    const p=sell(c);
+    return {costo:c,sell:p,marg:p-c,theoretical:p,minPrice:p,buffer:0,highCost:false};
+  };
+  window.calcFromUsd=(v)=>window.calcSellFromEurCost(Number(v||0));
+
+  function ui(){
+    const m=document.getElementById('markupMode');
+    const v=document.getElementById('markupValue');
+    const e=document.getElementById('markupExample');
+    const b=document.getElementById('saveMarkupSettings');
+    if(m&&v){
+      const r=rule();
+      m.value=r.mode;
+      v.value=r.value;
+      const refresh=()=>{
+        const n=Number(v.value||0);
+        e.textContent=m.value==='rate'
+          ? `Esempio: 50 € × ${n||0} = ${(50*(n||0)).toFixed(2)} €`
+          : `Esempio: 50 € + ${n||0}% = ${(50*(1+(n||0)/100)).toFixed(2)} €`;
+      };
+      m.onchange=refresh;
+      v.oninput=refresh;
+      refresh();
+      if(b) b.onclick=()=>{
+        const n=Number(v.value);
+        if(!(n>0)){ toast('Inserisci un valore maggiore di zero'); return; }
+        localStorage.setItem(K,JSON.stringify({mode:m.value==='rate'?'rate':'percent',value:n}));
+        refresh();
+        toast('Formula salvata');
+      };
+    }
+
+    const del=document.getElementById('deleteDemoDataBtn');
+    if(del){
+      del.onclick=()=>{
+        const db=loadDB();
+        db.articoli=(db.articoli||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
+        db.clienti=(db.clienti||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
+        db.ordini=(db.ordini||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
+        db.agenda=(db.agenda||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
+        db.categorie=[...new Set((db.articoli||[]).map(a=>a.categoria).filter(Boolean))];
+        saveDB(db);
+        toast('Dati di esempio eliminati');
+      };
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',ui);
+  setTimeout(ui,250);
+})();
+</script>
 </body>
 </html>
