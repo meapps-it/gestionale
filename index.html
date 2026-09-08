@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Gestionale"/>
-<link rel="manifest" href="manifest.json?v=1.0.116"/>
+<link rel="manifest" href="manifest.json?v=1.0.117"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-v1-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-v1-192.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v1.png"/>
@@ -935,7 +935,7 @@ body.sideMenuOpen{overflow:hidden}
       </div>
     
       <div class="card" style="margin-top:12px">
-        <div class="h2">Cloud</div>
+        <div class="h2">Cloud</div><div class="small" style="margin-top:4px">Una nuova installazione parte sempre solo con i dati di esempio. Il cloud non viene caricato automaticamente.</div>
         <div class="small">Accedi per sincronizzare i dati con il cloud.</div>
         <div id="cloudBar" class="date" style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span id="cloudState">Cloud</span>
@@ -1524,7 +1524,7 @@ body.sideMenuOpen{overflow:hidden}
 
 <script>
 /* ====== DB ====== */
-const KEY='gestionale_demo_db_v1';
+const KEY='gestionale_commercial_db_v1';
 const CAT_IMAGES_KEY='gestionale_demo_category_images_v1';
 const LEGACY_KEYS=[];
 const PHOTO_DB='gestionale_demo_photos_v1';
@@ -1714,12 +1714,28 @@ function buildDemoDB(){
   };
 }
 
+
+const COMMERCIAL_INSTALL_KEY='gestionale_commercial_install_v1';
+function ensureCommercialFirstInstall(){
+  try{
+    const done=localStorage.getItem(COMMERCIAL_INSTALL_KEY);
+    const existing=localStorage.getItem(KEY);
+    if(!done || !existing){
+      const demo=buildDemoDB();
+      localStorage.setItem(KEY,JSON.stringify(demo));
+      localStorage.setItem(COMMERCIAL_INSTALL_KEY,'1');
+      return demo;
+    }
+  }catch(_e){}
+  return null;
+}
+
 function defDB(){
   return buildDemoDB();
 }
 
 
-const APP_RESET_FLAG='gestionale_demo_reset_v1';
+const APP_RESET_FLAG='gestionale_commercial_reset_v1';
 const APP_RESET_OLD_KEYS=[];
 const ARTICLE_PUBLISH_RESET_FLAG='gestionale_demo_publish_reset_v1';
 const ARTICLE_PUBLISH_RESET_CLOUD_PENDING='gestionale_demo_publish_reset_cloud_pending_v1';
@@ -14499,22 +14515,10 @@ let autoCloudPullLastAt=0;
 function refreshAutoCloudPull(){
   if(autoCloudPullTimer){ clearInterval(autoCloudPullTimer); autoCloudPullTimer=null; }
   if(!cloudEnabled()) return;
-  autoCloudPullTimer=setInterval(()=>{ autoCloudPullNow('timer'); }, AUTO_CLOUD_PULL_MS);
+  autoCloudPullTimer=null;
 }
-async function autoCloudPullNow(reason='manual'){
-  if(!cloudEnabled() || autoCloudPullRunning || cloudBusy || document.hidden) return;
-  const now=Date.now();
-  if(reason!=='focus' && reason!=='visible' && (now-autoCloudPullLastAt)<60000) return;
-  autoCloudPullRunning=true;
-  autoCloudPullLastAt=now;
-  try{
-    await pullCloudToLocal({silent:true, background:true});
-    console.log('Auto cloud pull ok', reason);
-  }catch(err){
-    console.warn('Auto cloud pull fallita', reason, err);
-  }finally{
-    autoCloudPullRunning=false;
-  }
+async function autoCloudPullNow(reason='auto'){
+  return {skipped:true,reason:'commercial_manual_cloud_only'};
 }
 const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SUPABASE_BUCKET='articoli';
@@ -14600,7 +14604,7 @@ async function ensureCloud(){
       try{ renderActivePage(currentHistoryPage()); }catch(_e){}
       syncArticlePublishResetToCloudIfNeeded()
         .catch(err=>console.warn('Sync reset condivisioni cloud fallita', err))
-        .finally(()=>setTimeout(()=>autoCloudPullNow('login'), 1500));
+        .finally(()=>{});
     }
   });
   cloudUi();
@@ -16031,7 +16035,8 @@ function initAuthGate(){
           if(passEl) passEl.value='';
           hideAuthGate();
           cloudUi();
-          try{ await autoCloudPullNow('login'); }catch(_e){}
+          try{
+ }catch(_e){}
           toast('Account creato! Benvenuto 👋');
         }else{
           mode='login';
@@ -16062,7 +16067,8 @@ function initAuthGate(){
       hideAuthGate();
       cloudUi();
       // Carica dati dopo login
-      try{ await autoCloudPullNow('login'); }catch(_e){}
+      try{
+ }catch(_e){}
       toast('Benvenuto! 👋');
     }catch(err){
       showMsg(errEl,friendlyAuthError(err,'Email o password non corretti'));
@@ -16113,7 +16119,8 @@ function initRecoverGate(){
       hideRecoverGate();
       if(p1) p1.value=''; if(p2) p2.value='';
       cloudUi();
-      try{ await autoCloudPullNow('login'); }catch(_e){}
+      try{
+ }catch(_e){}
       toast('Password aggiornata! Ora sei dentro 👋');
     }catch(err){
       if(errEl){ errEl.textContent='Impossibile salvare la password, riprova'; errEl.style.display='block'; }
@@ -16233,7 +16240,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./service-worker.js?v=1.0.116', { updateViaCache:'none' }).then(async reg=>{
+    navigator.serviceWorker.register('./service-worker.js?v=1.0.117', { updateViaCache:'none' }).then(async reg=>{
       try{ await reg.update(); }catch(_e){}
     }).catch(err=>console.warn('Registrazione service worker fallita', err));
   }, {once:true});
@@ -16333,6 +16340,7 @@ if('serviceWorker' in navigator){
         db.agenda=(db.agenda||[]).filter(x=>!String(x.id||'').startsWith('DEMO-'));
         db.categorie=[...new Set((db.articoli||[]).map(a=>a.categoria).filter(Boolean))];
         saveDB(db);
+        try{ localStorage.setItem(COMMERCIAL_INSTALL_KEY,'1'); }catch(_e){}
         toast('Dati di esempio eliminati');
       };
     }
@@ -16374,6 +16382,7 @@ if('serviceWorker' in navigator){
     setTimeout(()=>{ if(!menu.classList.contains('open')) backdrop.hidden=true; },210);
   }
   document.addEventListener('DOMContentLoaded',()=>{
+  try{ ensureCommercialFirstInstall(); }catch(_e){}
     document.getElementById('hamburgerBtn')?.addEventListener('click',(e)=>{
       e.preventDefault(); e.stopPropagation(); openMenu();
     });
