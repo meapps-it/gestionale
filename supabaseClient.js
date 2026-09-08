@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const PROJECT_URL='https://qfjwtawsqfwmsmrrgqfi.supabase.co';
-  const STORAGE_KEY='sb-qfjwtawsqfwmsmrrgqfi-auth-token';
+  const STORAGE_KEY='sb-qfjwtawsqfwmsmrrgqfi-commercial-auth-token';
   const DEFAULT_PUBLIC_KEY='sb_publishable_-EUVjwsk3txKk2Opqrc7Kw_xFNa9Hw1';
 
   function decodeJwtPayload(token){

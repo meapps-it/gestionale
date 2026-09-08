@@ -1,4 +1,4 @@
-const CACHE='gestionale-commercial-v115';
+const CACHE='gestionale-commercial-v116';
 const CORE=[
   './',
   './index.html',
@@ -7,7 +7,8 @@ const CORE=[
   './icon-v1-192.png',
   './icon-v1-512.png',
   './icon-v1-maskable-512.png',
-  './apple-touch-icon-v1.png'
+  './apple-touch-icon-v1.png',
+  './supabaseClient.js'
 ];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));

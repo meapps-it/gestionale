@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Gestionale"/>
-<link rel="manifest" href="manifest.json?v=1.0.115"/>
+<link rel="manifest" href="manifest.json?v=1.0.116"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-v1-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-v1-192.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v1.png"/>
@@ -543,6 +543,24 @@ window.addEventListener('error',e=>{
 .sideMenuNav button.active{background:#fef3c7;border-color:#f59e0b}
 .sideMenuNav button:active{background:#f8fafc}
 body.sideMenuOpen{overflow:hidden}
+</style>
+
+
+<style>
+#authRecoverGate{
+  position:fixed;inset:0;z-index:100000;background:var(--bg);
+  display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px
+}
+#authRecoverGate .authBox{
+  width:100%;max-width:380px;background:#fff;border-radius:24px;padding:28px 24px;
+  box-shadow:0 20px 60px rgba(15,23,42,.12);display:flex;flex-direction:column;gap:14px
+}
+#authRecoverGate .authLogo{font-size:40px;text-align:center}
+#authRecoverGate .authTitle{font-size:22px;font-weight:1000;color:#0f172a;text-align:center;line-height:1.2;margin-top:-4px}
+#authRecoverGate .authSub{font-size:13px;font-weight:800;color:#64748b;text-align:center;margin-top:-6px}
+#authRecoverGate input{width:100%;box-sizing:border-box}
+#authRecoverGate .authErr{font-size:13px;font-weight:900;color:#ef4444;text-align:center;display:none;margin-top:-6px}
+#authRecoverGate .authBtn{width:100%;min-height:48px;font-size:16px;font-weight:900;background:var(--accent,#2563eb);color:#fff;border:none;border-radius:14px;cursor:pointer;margin-top:4px}
 </style>
 
 </head>
@@ -14441,6 +14459,33 @@ ensureComuniCapIndex().then(()=>{
   if(capVal) scheduleAddressLookup('cap',false,false); else if(cityVal) scheduleAddressLookup('city',false,false);
 }).catch(()=>{ setCapHint('Archivio CAP italiano non raggiungibile: puoi inserire CAP e città manualmente.'); });
 
+
+function authAppBaseUrl(){
+  try{
+    const u=new URL(window.location.href);
+    u.hash='';
+    u.search='';
+    if(!u.pathname.endsWith('/')){
+      u.pathname=u.pathname.replace(/\/[^/]*$/,'/');
+    }
+    return u.toString();
+  }catch(_e){
+    return window.location.origin+window.location.pathname;
+  }
+}
+function friendlyAuthError(err, fallback='Operazione non riuscita'){
+  const raw=String(err?.message||err||'').trim();
+  const low=raw.toLowerCase();
+  if(low.includes('invalid login credentials')) return 'Email o password non corretti';
+  if(low.includes('user already registered') || low.includes('already registered')) return 'Questa email è già registrata';
+  if(low.includes('password should be at least') || low.includes('password')&&low.includes('characters')) return 'La password deve avere almeno 6 caratteri';
+  if(low.includes('email rate limit exceeded')) return 'Troppe email richieste. Riprova tra qualche minuto';
+  if(low.includes('signup is disabled')) return 'Le nuove registrazioni sono disattivate nel cloud';
+  if(low.includes('redirect') && low.includes('allowed')) return 'Il link di ritorno non è autorizzato nelle impostazioni Supabase';
+  if(low.includes('failed to fetch') || low.includes('network')) return 'Connessione al cloud non disponibile';
+  return raw || fallback;
+}
+
 /* ====== CLOUD / SUPABASE ====== */
 let cloudClient=null;
 let cloudSession=null;
@@ -14544,11 +14589,14 @@ async function ensureCloud(){
   const {data:{session}}=await cloudClient.auth.getSession();
   cloudSession=session||null;
   if(cloudSession) syncArticlePublishResetToCloudIfNeeded().catch(err=>console.warn('Sync reset condivisioni cloud fallita', err));
-  cloudClient.auth.onAuthStateChange((_e,session)=>{
+  cloudClient.auth.onAuthStateChange((event,session)=>{
     cloudSession=session||null;
+    if(event==='PASSWORD_RECOVERY'){
+      setTimeout(()=>{ try{ showRecoverGate(); }catch(_e){} },0);
+    }
     cloudUi();
     refreshAutoCloudPull();
-    if(cloudSession){
+    if(cloudSession && event!=='PASSWORD_RECOVERY'){
       try{ renderActivePage(currentHistoryPage()); }catch(_e){}
       syncArticlePublishResetToCloudIfNeeded()
         .catch(err=>console.warn('Sync reset condivisioni cloud fallita', err))
@@ -15109,7 +15157,11 @@ async function cloudRegister(){
     if(!email || !password){ toast('Inserisci email e password'); return; }
     if(password.length<6){ toast('La password deve avere almeno 6 caratteri'); return; }
     cloudBusy=true; cloudUi();
-    const {data,error}=await sb.auth.signUp({email,password});
+    const {data,error}=await sb.auth.signUp({
+      email,
+      password,
+      options:{ emailRedirectTo: authAppBaseUrl() }
+    });
     if(error) throw error;
     if(data?.session){
       cloudSession=data.session;
@@ -15122,7 +15174,7 @@ async function cloudRegister(){
       toast('Controlla la tua email per confermare l\'account');
     }
   }catch(err){
-    const msg=err?.message?.includes('already registered')?'Email già registrata, premi Entra':'Registrazione non riuscita, riprova';
+    const msg=friendlyAuthError(err,'Registrazione non riuscita, riprova');
     if(errEl){ errEl.textContent=msg; errEl.style.display='block'; }
     console.error(err);
   }finally{
@@ -15140,13 +15192,13 @@ async function cloudForgotPassword(){
     const email=document.getElementById('cloudEmail')?.value.trim();
     if(!email){ toast('Scrivi la tua email nel campo sopra, poi premi di nuovo'); return; }
     cloudBusy=true; cloudUi();
-    const redirectTo=window.location.origin+window.location.pathname;
+    const redirectTo=authAppBaseUrl();
     const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
     if(error) throw error;
     if(okEl){ okEl.textContent='Email inviata! Apri la posta e clicca sul link per scegliere la nuova password.'; okEl.style.display='block'; }
     toast('Email di recupero inviata');
   }catch(err){
-    const msg=err?.message==='email rate limit exceeded'?'Troppe richieste, riprova tra qualche minuto':'Impossibile inviare l\'email, riprova';
+    const msg=friendlyAuthError(err,'Impossibile inviare l\'email, riprova');
     if(errEl){ errEl.textContent=msg; errEl.style.display='block'; }
     console.error(err);
   }finally{
@@ -15947,12 +15999,12 @@ function initAuthGate(){
       try{
         const sb=await ensureCloud();
         if(!sb){ throw new Error('Supabase non disponibile'); }
-        const redirectTo=window.location.origin+window.location.pathname;
+        const redirectTo=authAppBaseUrl();
         const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
         if(error) throw error;
         showMsg(okEl,'Email inviata! Controlla la posta e clicca sul link.');
       }catch(err){
-        showMsg(errEl, err?.message==='email rate limit exceeded' ? 'Troppe richieste, riprova tra qualche minuto' : 'Impossibile inviare l\'email, riprova');
+        showMsg(errEl, friendlyAuthError(err,'Impossibile inviare l\'email, riprova'));
         console.warn('Reset password fallito:',err);
       }finally{
         btn.disabled=false; btn.textContent='Invia email di recupero';
@@ -15961,13 +16013,18 @@ function initAuthGate(){
     }
 
     if(!email||!pass){ showMsg(errEl,'Inserisci email e password'); return; }
+    if(mode==='register' && pass.length<6){ showMsg(errEl,'La password deve avere almeno 6 caratteri'); return; }
 
     if(mode==='register'){
       btn.textContent='Creazione account…'; btn.disabled=true; hideMsgs();
       try{
         const sb=await ensureCloud();
         if(!sb){ throw new Error('Supabase non disponibile'); }
-        const {data,error}=await sb.auth.signUp({email,password:pass});
+        const {data,error}=await sb.auth.signUp({
+          email,
+          password:pass,
+          options:{ emailRedirectTo: authAppBaseUrl() }
+        });
         if(error) throw error;
         if(data?.session){
           cloudSession=data.session;
@@ -15977,11 +16034,15 @@ function initAuthGate(){
           try{ await autoCloudPullNow('login'); }catch(_e){}
           toast('Account creato! Benvenuto 👋');
         }else{
-          showMsg(okEl,'Account creato! Controlla la tua email per confermare, poi accedi.');
-          mode='login'; applyMode();
+          mode='login';
+          btn.textContent='Accedi';
+          if(passEl) passEl.style.display='';
+          if(regLink) regLink.textContent='Registrati';
+          if(forgotLink) forgotLink.style.display='';
+          showMsg(okEl,'Account creato. Controlla la tua email per confermare, poi accedi.');
         }
       }catch(err){
-        showMsg(errEl, err?.message?.includes('already registered') ? 'Email già registrata, prova ad accedere' : 'Registrazione non riuscita, riprova');
+        showMsg(errEl, friendlyAuthError(err,'Registrazione non riuscita, riprova'));
         console.warn('Registrazione fallita:',err);
       }finally{
         btn.disabled=false; if(mode==='register') btn.textContent='Crea account';
@@ -16004,7 +16065,7 @@ function initAuthGate(){
       try{ await autoCloudPullNow('login'); }catch(_e){}
       toast('Benvenuto! 👋');
     }catch(err){
-      showMsg(errEl,'Email o password non corretti');
+      showMsg(errEl,friendlyAuthError(err,'Email o password non corretti'));
       console.warn('Auth gate login fallito:',err);
     }finally{
       btn.textContent = mode==='login' ? 'Accedi' : btn.textContent; btn.disabled=false;
@@ -16028,6 +16089,12 @@ function hideRecoverGate(){
 }
 function initRecoverGate(){
   const saveBtn=document.getElementById('recoverSaveBtn');
+  try{
+    const raw=(window.location.hash||'')+' '+(window.location.search||'');
+    if(/type=recovery|password_recovery|access_token=/i.test(raw)){
+      setTimeout(()=>showRecoverGate(),0);
+    }
+  }catch(_e){}
   const p1=document.getElementById('recoverPassword');
   const p2=document.getElementById('recoverPassword2');
   const errEl=document.getElementById('recoverErr');
@@ -16093,6 +16160,7 @@ async function bootApp(){
   requestPersistentStorage();
   hideAuthGate();
   try{ cloudUi(); }catch(_e){}
+  try{ initAuthGate(); }catch(_e){}
   try{ initRecoverGate(); }catch(_e){}
 }
 bootApp();
@@ -16165,7 +16233,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./service-worker.js?v=1.0.115', { updateViaCache:'none' }).then(async reg=>{
+    navigator.serviceWorker.register('./service-worker.js?v=1.0.116', { updateViaCache:'none' }).then(async reg=>{
       try{ await reg.update(); }catch(_e){}
     }).catch(err=>console.warn('Registrazione service worker fallita', err));
   }, {once:true});
