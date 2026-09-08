@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Gestionale"/>
-<link rel="manifest" href="manifest.json?v=1.0.110-demo"/>
+<link rel="manifest" href="manifest.json?v=1.0.115"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-v1-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-v1-192.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v1.png"/>
@@ -22,7 +22,7 @@ body{-webkit-tap-highlight-color:transparent}
 .top{position:sticky;top:0;background:var(--navy);color:#fff;padding:10px 14px 8px;z-index:10}
 .top h1{margin:0;font-size:18px;font-weight:900;line-height:1.1}
 .date{margin-top:2px;font-size:11px;opacity:.86}
-.app{max-width:560px;margin:0 auto;min-height:100vh;padding:12px 12px 28px}
+.app{max-width:560px;margin:0 auto;min-height:100vh;padding:12px 12px 108px}
 .tabs{display:none !important}.tabs::-webkit-scrollbar{display:none}.tab{display:none}
 /* Social styles */
 .socialCard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:0 10px 24px rgba(15,23,42,.05);display:flex;flex-direction:column;gap:8px}.socialTypePill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:900;background:#eef2ff;border:1px solid #c7d2fe;color:#1e3a8a}.socialTypePill.promo{background:#fef3c7;border-color:#fde68a;color:#92400e}.socialTypePill.carosello{background:#f0fdf4;border-color:#86efac;color:#166534}.socialTypePill.video{background:#fdf4ff;border-color:#e9d5ff;color:#7e22ce}.socialTypePill.consigli{background:#fff7ed;border-color:#fed7aa;color:#c2410c}.socialTypePill.testimonial{background:#f0fdf4;border-color:#6ee7b7;color:#065f46}.socialTypePill.lancio{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.platformBadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:900;padding:3px 8px;border-radius:999px;border:1px solid var(--line)}.platformBadge.fb{background:#e7f3ff;border-color:#93c5fd;color:#1d4ed8}.platformBadge.ig{background:#fdf2f8;border-color:#f0abfc;color:#86198f}.platformBadge.entrambi{background:#f0fdf4;border-color:#86efac;color:#166534}.socialPubMeta{font-size:11px;color:#64748b;font-weight:800}.socialSuggestGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.socialSuggestItem{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}.socialSuggestItem:active{background:#f8fafc}.socialSuggestEmoji{font-size:22px;margin-bottom:4px}.socialSuggestTitle{font-size:13px;font-weight:900;color:#0f172a;line-height:1.2}.socialSuggestDesc{font-size:11px;color:#64748b;font-weight:800;margin-top:2px;line-height:1.3}.socialFolderGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.socialFolder{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:62px;padding:12px 13px;border:1px solid #dbe3ee;border-radius:16px;background:#fff;color:#0f172a;font:inherit;text-align:left;cursor:pointer;box-shadow:0 6px 16px rgba(15,23,42,.04)}.socialFolder:active{background:#f8fafc}.socialFolderMain{display:flex;align-items:center;gap:10px;min-width:0}.socialFolderIcon{font-size:25px;line-height:1}.socialFolderName{font-size:13px;font-weight:900;line-height:1.2}.socialFolderMeta{font-size:10px;color:#64748b;font-weight:800;margin-top:3px}.socialFolderCount{min-width:30px;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#1e3a8a;font-size:12px;font-weight:900;text-align:center}.socialCategoryHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding:10px 12px;border:1px solid #dbe3ee;border-radius:14px;background:#f8fafc}.socialCategoryHeaderTitle{font-size:13px;font-weight:900;color:#0f172a}.socialCatManageRow{border:1px solid #dbe3ee;border-radius:14px;padding:11px;background:#fff}.socialCatManageTop{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px}.socialCatManageTop input{min-width:0}.socialCatManageCount{font-size:11px;color:#64748b;font-weight:800;margin-top:6px}.socialMoveInfo{padding:10px 12px;border-radius:14px;background:#f8fafc;border:1px solid #dbe3ee;font-size:12px;color:#475569;font-weight:800;line-height:1.4}@media(max-width:420px){.socialFolderGrid{grid-template-columns:1fr}}
@@ -146,7 +146,7 @@ body{-webkit-tap-highlight-color:transparent}
 .inputSupplierStd .k{color:#1d4ed8}
 .inputSupplierPromo .k{color:#b45309}
 .inputPromoPersonal .k{color:#15803d}
-.navBottom{display:none !important;position:fixed;left:0;right:0;bottom:0;background:rgba(248,250,252,.98);border-top:1px solid var(--line);padding:10px 10px calc(10px + env(safe-area-inset-bottom));z-index:20;backdrop-filter:blur(10px)}
+.navBottom{position:fixed;left:0;right:0;bottom:0;background:rgba(248,250,252,.98);border-top:1px solid var(--line);padding:10px 10px calc(10px + env(safe-area-inset-bottom));z-index:20;backdrop-filter:blur(10px)}
 .navBottom .inner{max-width:560px;margin:0 auto;display:flex;overflow-x:auto;gap:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}.navBottom .inner::-webkit-scrollbar{display:none}
 .navBottom button{border:1px solid var(--line);background:#fff;padding:10px 10px;font-weight:900;color:#111827;font-size:13px;touch-action:manipulation;border-radius:16px;box-shadow:0 6px 14px rgba(15,23,42,.04);min-width:88px;flex:0 0 auto;white-space:nowrap;line-height:1.05}
 .navBottom button.active{background:#fef3c7;border-color:#f59e0b;color:#111827;box-shadow:0 6px 14px rgba(245,158,11,.14)}
@@ -243,7 +243,7 @@ video.hero{background:#000}
   .artPrice{font-size:16px}
   .artActions .btn,.btn.orderAdd.small{min-height:40px;font-size:12px;padding:8px 10px}
   .actions{grid-template-columns:1fr 1fr}
-  .app{padding:10px 10px 28px}
+  .app{padding:10px 10px 88px}
   .tabs{gap:6px}
   .tab{padding:10px 6px;font-size:12px;border-radius:14px}
   .top{padding:14px 12px 12px}
@@ -613,13 +613,13 @@ body.sideMenuOpen{overflow:hidden}
     <button id="sideMenuClose" class="sideMenuClose" type="button" aria-label="Chiudi menu">×</button>
   </div>
   <nav class="sideMenuNav">
-    <button type="button" data-menu-page="home">Dashboard</button>
-    <button type="button" data-menu-page="articoli">Articoli</button>
-    <button type="button" data-menu-page="clienti">Clienti</button>
-    <button type="button" data-menu-page="ordini">Ordini</button>
-    <button type="button" data-menu-page="finanze">Finanze</button>
-    <button type="button" data-menu-page="social">Bacheca</button>
-    <button type="button" data-menu-page="impostazioni">Impostazioni</button>
+    <button type="button" data-go="home" data-side-menu="home">Dashboard</button>
+    <button type="button" data-go="articoli" data-side-menu="articoli">Articoli</button>
+    <button type="button" data-go="clienti" data-side-menu="clienti">Clienti</button>
+    <button type="button" data-go="ordini" data-side-menu="ordini">Ordini</button>
+    <button type="button" data-go="finanze" data-side-menu="finanze">Finanze</button>
+    <button type="button" data-go="social" data-side-menu="social">Bacheca</button>
+    <button type="button" data-go="impostazioni" data-side-menu="impostazioni">Impostazioni</button>
   </nav>
 </aside>
 
@@ -698,12 +698,11 @@ body.sideMenuOpen{overflow:hidden}
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="h2">Articoli</div><button class="btn" type="button" data-action="newArt">+ Nuovo</button></div>
       <div style="margin-top:10px">
         <div class="searchWrap"><input id="qArt" placeholder="Cerca per codice, modello, categoria, colore, materiale, variante..." autocomplete="off" autocapitalize="off" spellcheck="false"/><div id="qArtSuggest" class="searchSuggest"></div></div>
-        </div>
       </div>
-      <div class="grid2 artFilterGrid" style="margin-top:10px">
-        <div><select id="qArtCat"><option value="">Tutte le categorie</option></select></div>
+      <div style="margin-top:10px">
+        <select id="qArtCat"><option value="">Tutte le categorie</option></select>
         <select id="qArtBrand" style="display:none"><option value=""></option></select>
-        <div><select id="qArtQuality"><option value="">Tutte le qualità</option></select></div>
+        <select id="qArtQuality" style="display:none"><option value=""></option></select>
       </div>
       <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn" type="button" data-action="clearArtFilters">Mostra prodotti</button>
@@ -762,6 +761,7 @@ body.sideMenuOpen{overflow:hidden}
     </div>
     <div id="finDataHealth" class="card" style="margin-bottom:12px"></div>
     <div id="finCommercialCards" class="cards" style="margin-bottom:12px"></div>
+    <div id="finByQuality" style="display:none"></div>
     <div class="cards">
       <div class="card"><div class="k">Fatturato ordini</div><div id="f_fatt" class="v">0</div></div>
       <div class="card"><div class="k">Incassato totale</div><div id="f_inc" class="v">0</div></div>
@@ -1118,19 +1118,17 @@ body.sideMenuOpen{overflow:hidden}
     <div><div class="k">Data inserimento</div><div id="vArtCreatedAt" class="t">-</div></div>
   </div>
   <div class="hr"></div>
-  <div class="h3">Prezzi e risultato</div>
+  <div class="h3">Prezzi</div>
   <div class="grid2" style="margin-top:10px">
     <div><div class="k">Prezzo vendita</div><div id="vArtPrezzo" class="t">-</div></div>
     <div>
       <div class="k">Prezzo in uso</div>
       <div id="vArtPrezzoUse" class="priceHot">-</div>
       <div id="vArtPromoPill"></div>
-      <div id="vArtMarginBox" class="marginBox" style="margin-top:8px"></div>
+      <div id="vArtMarginBox" style="display:none"></div>
     </div>
   </div>
-  <div id="vArtOfficialWrap" style="margin-top:14px;display:none;padding:12px 14px;border:1px solid #cbd5e1;border-radius:16px;background:#f8fafc">
-    <div class="k" style="margin-bottom:4px">Riferimento ufficiale</div>
-    <div><div class="k"></div><div id="vArtOfficialPrice" class="t">-</div></div>
+  <div id="vArtOfficialWrap" style="display:none"><div id="vArtOfficialPrice"></div></div>
     <div class="helper" style="margin-top:5px">Dato informativo. Non incide sui calcoli.</div>
   </div>
   <div style="margin-top:12px"><div class="k">Descrizione</div><div id="vArtDescription" class="mutedBox">-</div><div class="actions compact" style="margin-top:8px"><button class="btn primary smallish" type="button" data-action="shareArtAll">Condividi</button></div></div>
@@ -1224,15 +1222,16 @@ body.sideMenuOpen{overflow:hidden}
       <div><div class="k">Costo fornitore</div><input id="a_eur" readonly/></div>
       <div><div class="k">Prezzo consigliato</div><input id="a_recommended" readonly/></div>
     </div>
-    <div class="grid2" style="margin-top:10px">
-      <div><div id="a_sell_label" class="k">Prezzo vendita</div><input id="a_sell" inputmode="decimal" autocomplete="off"/><div id="a_sell_hint" class="helper" style="display:none"></div></div>
-      <div><div class="k">Risultato</div><input id="a_margin" readonly/></div>
+    <div style="margin-top:10px">
+      <div id="a_sell_label" class="k">Prezzo vendita</div>
+      <input id="a_sell" inputmode="decimal" autocomplete="off"/>
+      <div id="a_sell_hint" class="helper" style="display:none"></div>
     </div>
+    <input id="a_margin" type="hidden"/>
     <input id="a_profit_min" type="hidden"/><input id="a_theoretical" type="hidden"/><input id="a_high_cost_rule" type="hidden"/><input id="a_final" type="hidden"/><input id="a_promo_type" type="hidden"/><div id="a_margin_pct" style="display:none"></div><div id="a_min_price_warning" style="display:none"></div><div id="a_high_cost_warning" style="display:none"></div>
   </div>
 
   <input id="a_official_price" type="hidden"/>
-  </div>
 
   <div style="display:none"><input id="a_promo_on" type="checkbox"/><input id="a_promo_price"/><input id="a_promo_date"/><div id="a_promo_summary"></div></div>
 
@@ -1442,7 +1441,7 @@ body.sideMenuOpen{overflow:hidden}
     <div class="orderPrimaryRow">
       <div>
         <div class="k">Articolo</div>
-        <div class="searchWrap"><input id="o_art_q" placeholder="Cerca per codice, nome, qualità o colore" autocomplete="off" autocapitalize="off" spellcheck="false"/><div id="oArtSuggest" class="searchSuggest"></div></div>
+        <div class="searchWrap"><input id="o_art_q" placeholder="Cerca per codice, nome o colore" autocomplete="off" autocapitalize="off" spellcheck="false"/><div id="oArtSuggest" class="searchSuggest"></div></div>
         <select id="o_art_pick"><option value="">Seleziona articolo</option></select>
         <select id="o_art" multiple hidden></select>
         <div class="helper">Cerca per codice o nome e scegli dalla tendina.</div>
@@ -1613,26 +1612,26 @@ function buildDemoDB(){
   const createdAt=new Date().toISOString();
 
   const articoli=[
-    {id:'DEMO-A001',codice:'CAS-001',modello:'Set 6 bicchieri vetro',categoria:'Casa',descrizione:'Set di sei bicchieri trasparenti per uso quotidiano.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'6 pezzi',colore:'Trasparente',misura:'300 ml',costoEur:12,prezzoVendita:22,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A002',codice:'CAS-002',modello:'Organizzatore cassetti',categoria:'Casa',descrizione:'Organizer modulare per cassetti cucina o bagno.',fornitore:'Fornitore Demo',materiale:'Plastica',variante:'Modulare',colore:'Bianco',misura:'32 x 24 cm',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A003',codice:'CAS-003',modello:'Lampada da tavolo LED',categoria:'Casa',descrizione:'Lampada LED da tavolo con luce regolabile.',fornitore:'Fornitore Demo',materiale:'Metallo e ABS',variante:'Touch',colore:'Nero',misura:'38 cm',costoEur:19,prezzoVendita:35,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
-    {id:'DEMO-A004',codice:'CAS-004',modello:'Contenitori cucina 4 pezzi',categoria:'Casa',descrizione:'Set contenitori impilabili per dispensa.',fornitore:'Fornitore Demo',materiale:'Plastica alimentare',variante:'4 pezzi',colore:'Trasparente',misura:'Varie',costoEur:16,prezzoVendita:29,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-borse.jpg']},
-    {id:'DEMO-A005',codice:'CAS-005',modello:'Tappeto bagno antiscivolo',categoria:'Casa',descrizione:'Tappeto morbido con fondo antiscivolo.',fornitore:'Fornitore Demo',materiale:'Microfibra',variante:'Rettangolare',colore:'Grigio',misura:'50 x 80 cm',costoEur:11,prezzoVendita:21,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A006',codice:'CAS-006',modello:'Mensola adesiva bagno',categoria:'Casa',descrizione:'Mensola senza fori per bagno o cucina.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Singola',colore:'Nero',misura:'30 cm',costoEur:14,prezzoVendita:27,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
-    {id:'DEMO-A007',codice:'COM-001',modello:'Borraccia termica 500 ml',categoria:'Tempo libero',descrizione:'Borraccia termica in acciaio con tappo a vite.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'500 ml',colore:'Blu',misura:'500 ml',costoEur:10,prezzoVendita:20,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A008',codice:'COM-002',modello:'Power bank 10000 mAh',categoria:'Elettronica',descrizione:'Batteria portatile compatta con doppia uscita USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'10000 mAh',colore:'Nero',misura:'Compatto',costoEur:18,prezzoVendita:32,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A009',codice:'COM-003',modello:'Auricolari Bluetooth',categoria:'Elettronica',descrizione:'Auricolari wireless con custodia di ricarica.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'Bluetooth',colore:'Bianco',misura:'Standard',costoEur:17,prezzoVendita:34,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
-    {id:'DEMO-A010',codice:'COM-004',modello:'Supporto smartphone da auto',categoria:'Auto',descrizione:'Supporto orientabile per bocchetta aria.',fornitore:'Fornitore Demo',materiale:'ABS e silicone',variante:'Universale',colore:'Nero',misura:'Universale',costoEur:7,prezzoVendita:15,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
-    {id:'DEMO-A011',codice:'COM-005',modello:'Cavo USB-C 2 metri',categoria:'Elettronica',descrizione:'Cavo rinforzato per ricarica e trasferimento dati.',fornitore:'Fornitore Demo',materiale:'Nylon',variante:'2 m',colore:'Nero',misura:'2 m',costoEur:4,prezzoVendita:9,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A012',codice:'COM-006',modello:'Mouse wireless',categoria:'Ufficio',descrizione:'Mouse wireless compatto per casa e ufficio.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'2.4 GHz',colore:'Grigio',misura:'Standard',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
-    {id:'DEMO-A013',codice:'CAS-007',modello:'Stendibiancheria pieghevole',categoria:'Casa',descrizione:'Stendibiancheria salvaspazio richiudibile.',fornitore:'Fornitore Demo',materiale:'Acciaio',variante:'Pieghevole',colore:'Bianco',misura:'Medio',costoEur:24,prezzoVendita:42,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A014',codice:'CAS-008',modello:'Diffusore ambiente',categoria:'Casa',descrizione:'Diffusore decorativo per essenze ambiente.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'Con bastoncini',colore:'Ambra',misura:'100 ml',costoEur:8,prezzoVendita:16,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A015',codice:'COM-007',modello:'Zaino porta PC 15.6',categoria:'Ufficio',descrizione:'Zaino imbottito con vano notebook e tasche accessori.',fornitore:'Fornitore Demo',materiale:'Poliestere',variante:'15.6 pollici',colore:'Nero',misura:'45 x 31 cm',costoEur:23,prezzoVendita:45,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
-    {id:'DEMO-A016',codice:'COM-008',modello:'Ventilatore USB da scrivania',categoria:'Ufficio',descrizione:'Ventilatore compatto alimentato via USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'3 velocità',colore:'Bianco',misura:'18 cm',costoEur:13,prezzoVendita:25,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-borse.jpg','cat-cinture.jpg','cat-accessori.jpg','cat-borse.jpg']},
-    {id:'DEMO-A017',codice:'CAS-009',modello:'Bilancia digitale cucina',categoria:'Casa',descrizione:'Bilancia digitale compatta con display LCD.',fornitore:'Fornitore Demo',materiale:'ABS e vetro',variante:'5 kg',colore:'Argento',misura:'5 kg',costoEur:12,prezzoVendita:23,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg']},
-    {id:'DEMO-A018',codice:'COM-009',modello:'Mini torcia ricaricabile',categoria:'Tempo libero',descrizione:'Torcia LED compatta ricaricabile USB.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Ricaricabile',colore:'Nero',misura:'Tascabile',costoEur:8,prezzoVendita:17,disponibile:true,nonDisponibile:false,foto:['cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
-    {id:'DEMO-A019',codice:'CAS-010',modello:'Set posate 24 pezzi',categoria:'Casa',descrizione:'Set posate per sei persone.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'24 pezzi',colore:'Argento',misura:'24 pezzi',costoEur:21,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg']},
-    {id:'DEMO-A020',codice:'COM-010',modello:'Hub USB 4 porte',categoria:'Elettronica',descrizione:'Hub compatto con quattro porte USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'4 porte',colore:'Nero',misura:'Compatto',costoEur:10,prezzoVendita:19,disponibile:true,nonDisponibile:false,foto:['cat-borse.jpg','cat-accessori.jpg','cat-cinture.jpg','cat-borse.jpg','cat-accessori.jpg']}
+    {id:'DEMO-A001',codice:'CAS-001',modello:'Set 6 bicchieri vetro',categoria:'Casa',descrizione:'Set di sei bicchieri trasparenti per uso quotidiano.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'6 pezzi',colore:'Trasparente',misura:'300 ml',costoEur:12,prezzoVendita:22,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A001-1.jpg','demo-photos/DEMO-A001-2.jpg','demo-photos/DEMO-A001-3.jpg','demo-photos/DEMO-A001-4.jpg','demo-photos/DEMO-A001-5.jpg','demo-photos/DEMO-A001-6.jpg']},
+    {id:'DEMO-A002',codice:'CAS-002',modello:'Organizzatore cassetti',categoria:'Casa',descrizione:'Organizer modulare per cassetti cucina o bagno.',fornitore:'Fornitore Demo',materiale:'Plastica',variante:'Modulare',colore:'Bianco',misura:'32 x 24 cm',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A002-1.jpg','demo-photos/DEMO-A002-2.jpg','demo-photos/DEMO-A002-3.jpg','demo-photos/DEMO-A002-4.jpg','demo-photos/DEMO-A002-5.jpg','demo-photos/DEMO-A002-6.jpg']},
+    {id:'DEMO-A003',codice:'CAS-003',modello:'Lampada da tavolo LED',categoria:'Casa',descrizione:'Lampada LED da tavolo con luce regolabile.',fornitore:'Fornitore Demo',materiale:'Metallo e ABS',variante:'Touch',colore:'Nero',misura:'38 cm',costoEur:19,prezzoVendita:35,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A003-1.jpg','demo-photos/DEMO-A003-2.jpg','demo-photos/DEMO-A003-3.jpg','demo-photos/DEMO-A003-4.jpg','demo-photos/DEMO-A003-5.jpg','demo-photos/DEMO-A003-6.jpg']},
+    {id:'DEMO-A004',codice:'CAS-004',modello:'Contenitori cucina 4 pezzi',categoria:'Casa',descrizione:'Set contenitori impilabili per dispensa.',fornitore:'Fornitore Demo',materiale:'Plastica alimentare',variante:'4 pezzi',colore:'Trasparente',misura:'Varie',costoEur:16,prezzoVendita:29,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A004-1.jpg','demo-photos/DEMO-A004-2.jpg','demo-photos/DEMO-A004-3.jpg','demo-photos/DEMO-A004-4.jpg','demo-photos/DEMO-A004-5.jpg','demo-photos/DEMO-A004-6.jpg']},
+    {id:'DEMO-A005',codice:'CAS-005',modello:'Tappeto bagno antiscivolo',categoria:'Casa',descrizione:'Tappeto morbido con fondo antiscivolo.',fornitore:'Fornitore Demo',materiale:'Microfibra',variante:'Rettangolare',colore:'Grigio',misura:'50 x 80 cm',costoEur:11,prezzoVendita:21,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A005-1.jpg','demo-photos/DEMO-A005-2.jpg','demo-photos/DEMO-A005-3.jpg','demo-photos/DEMO-A005-4.jpg','demo-photos/DEMO-A005-5.jpg','demo-photos/DEMO-A005-6.jpg']},
+    {id:'DEMO-A006',codice:'CAS-006',modello:'Mensola adesiva bagno',categoria:'Casa',descrizione:'Mensola senza fori per bagno o cucina.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Singola',colore:'Nero',misura:'30 cm',costoEur:14,prezzoVendita:27,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A006-1.jpg','demo-photos/DEMO-A006-2.jpg','demo-photos/DEMO-A006-3.jpg','demo-photos/DEMO-A006-4.jpg','demo-photos/DEMO-A006-5.jpg','demo-photos/DEMO-A006-6.jpg']},
+    {id:'DEMO-A007',codice:'COM-001',modello:'Borraccia termica 500 ml',categoria:'Tempo libero',descrizione:'Borraccia termica in acciaio con tappo a vite.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'500 ml',colore:'Blu',misura:'500 ml',costoEur:10,prezzoVendita:20,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A007-1.jpg','demo-photos/DEMO-A007-2.jpg','demo-photos/DEMO-A007-3.jpg','demo-photos/DEMO-A007-4.jpg','demo-photos/DEMO-A007-5.jpg','demo-photos/DEMO-A007-6.jpg']},
+    {id:'DEMO-A008',codice:'COM-002',modello:'Power bank 10000 mAh',categoria:'Elettronica',descrizione:'Batteria portatile compatta con doppia uscita USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'10000 mAh',colore:'Nero',misura:'Compatto',costoEur:18,prezzoVendita:32,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A008-1.jpg','demo-photos/DEMO-A008-2.jpg','demo-photos/DEMO-A008-3.jpg','demo-photos/DEMO-A008-4.jpg','demo-photos/DEMO-A008-5.jpg','demo-photos/DEMO-A008-6.jpg']},
+    {id:'DEMO-A009',codice:'COM-003',modello:'Auricolari Bluetooth',categoria:'Elettronica',descrizione:'Auricolari wireless con custodia di ricarica.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'Bluetooth',colore:'Bianco',misura:'Standard',costoEur:17,prezzoVendita:34,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A009-1.jpg','demo-photos/DEMO-A009-2.jpg','demo-photos/DEMO-A009-3.jpg','demo-photos/DEMO-A009-4.jpg','demo-photos/DEMO-A009-5.jpg','demo-photos/DEMO-A009-6.jpg']},
+    {id:'DEMO-A010',codice:'COM-004',modello:'Supporto smartphone da auto',categoria:'Auto',descrizione:'Supporto orientabile per bocchetta aria.',fornitore:'Fornitore Demo',materiale:'ABS e silicone',variante:'Universale',colore:'Nero',misura:'Universale',costoEur:7,prezzoVendita:15,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A010-1.jpg','demo-photos/DEMO-A010-2.jpg','demo-photos/DEMO-A010-3.jpg','demo-photos/DEMO-A010-4.jpg','demo-photos/DEMO-A010-5.jpg','demo-photos/DEMO-A010-6.jpg']},
+    {id:'DEMO-A011',codice:'COM-005',modello:'Cavo USB-C 2 metri',categoria:'Elettronica',descrizione:'Cavo rinforzato per ricarica e trasferimento dati.',fornitore:'Fornitore Demo',materiale:'Nylon',variante:'2 m',colore:'Nero',misura:'2 m',costoEur:4,prezzoVendita:9,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A011-1.jpg','demo-photos/DEMO-A011-2.jpg','demo-photos/DEMO-A011-3.jpg','demo-photos/DEMO-A011-4.jpg','demo-photos/DEMO-A011-5.jpg','demo-photos/DEMO-A011-6.jpg']},
+    {id:'DEMO-A012',codice:'COM-006',modello:'Mouse wireless',categoria:'Ufficio',descrizione:'Mouse wireless compatto per casa e ufficio.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'2.4 GHz',colore:'Grigio',misura:'Standard',costoEur:9,prezzoVendita:18,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A012-1.jpg','demo-photos/DEMO-A012-2.jpg','demo-photos/DEMO-A012-3.jpg','demo-photos/DEMO-A012-4.jpg','demo-photos/DEMO-A012-5.jpg','demo-photos/DEMO-A012-6.jpg']},
+    {id:'DEMO-A013',codice:'CAS-007',modello:'Stendibiancheria pieghevole',categoria:'Casa',descrizione:'Stendibiancheria salvaspazio richiudibile.',fornitore:'Fornitore Demo',materiale:'Acciaio',variante:'Pieghevole',colore:'Bianco',misura:'Medio',costoEur:24,prezzoVendita:42,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A013-1.jpg','demo-photos/DEMO-A013-2.jpg','demo-photos/DEMO-A013-3.jpg','demo-photos/DEMO-A013-4.jpg','demo-photos/DEMO-A013-5.jpg','demo-photos/DEMO-A013-6.jpg']},
+    {id:'DEMO-A014',codice:'CAS-008',modello:'Diffusore ambiente',categoria:'Casa',descrizione:'Diffusore decorativo per essenze ambiente.',fornitore:'Fornitore Demo',materiale:'Vetro',variante:'Con bastoncini',colore:'Ambra',misura:'100 ml',costoEur:8,prezzoVendita:16,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A014-1.jpg','demo-photos/DEMO-A014-2.jpg','demo-photos/DEMO-A014-3.jpg','demo-photos/DEMO-A014-4.jpg','demo-photos/DEMO-A014-5.jpg','demo-photos/DEMO-A014-6.jpg']},
+    {id:'DEMO-A015',codice:'COM-007',modello:'Zaino porta PC 15.6',categoria:'Ufficio',descrizione:'Zaino imbottito con vano notebook e tasche accessori.',fornitore:'Fornitore Demo',materiale:'Poliestere',variante:'15.6 pollici',colore:'Nero',misura:'45 x 31 cm',costoEur:23,prezzoVendita:45,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A015-1.jpg','demo-photos/DEMO-A015-2.jpg','demo-photos/DEMO-A015-3.jpg','demo-photos/DEMO-A015-4.jpg','demo-photos/DEMO-A015-5.jpg','demo-photos/DEMO-A015-6.jpg']},
+    {id:'DEMO-A016',codice:'COM-008',modello:'Ventilatore USB da scrivania',categoria:'Ufficio',descrizione:'Ventilatore compatto alimentato via USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'3 velocità',colore:'Bianco',misura:'18 cm',costoEur:13,prezzoVendita:25,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A016-1.jpg','demo-photos/DEMO-A016-2.jpg','demo-photos/DEMO-A016-3.jpg','demo-photos/DEMO-A016-4.jpg','demo-photos/DEMO-A016-5.jpg','demo-photos/DEMO-A016-6.jpg']},
+    {id:'DEMO-A017',codice:'CAS-009',modello:'Bilancia digitale cucina',categoria:'Casa',descrizione:'Bilancia digitale compatta con display LCD.',fornitore:'Fornitore Demo',materiale:'ABS e vetro',variante:'5 kg',colore:'Argento',misura:'5 kg',costoEur:12,prezzoVendita:23,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A017-1.jpg','demo-photos/DEMO-A017-2.jpg','demo-photos/DEMO-A017-3.jpg','demo-photos/DEMO-A017-4.jpg','demo-photos/DEMO-A017-5.jpg','demo-photos/DEMO-A017-6.jpg']},
+    {id:'DEMO-A018',codice:'COM-009',modello:'Mini torcia ricaricabile',categoria:'Tempo libero',descrizione:'Torcia LED compatta ricaricabile USB.',fornitore:'Fornitore Demo',materiale:'Alluminio',variante:'Ricaricabile',colore:'Nero',misura:'Tascabile',costoEur:8,prezzoVendita:17,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A018-1.jpg','demo-photos/DEMO-A018-2.jpg','demo-photos/DEMO-A018-3.jpg','demo-photos/DEMO-A018-4.jpg','demo-photos/DEMO-A018-5.jpg','demo-photos/DEMO-A018-6.jpg']},
+    {id:'DEMO-A019',codice:'CAS-010',modello:'Set posate 24 pezzi',categoria:'Casa',descrizione:'Set posate per sei persone.',fornitore:'Fornitore Demo',materiale:'Acciaio inox',variante:'24 pezzi',colore:'Argento',misura:'24 pezzi',costoEur:21,prezzoVendita:39,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A019-1.jpg','demo-photos/DEMO-A019-2.jpg','demo-photos/DEMO-A019-3.jpg','demo-photos/DEMO-A019-4.jpg','demo-photos/DEMO-A019-5.jpg','demo-photos/DEMO-A019-6.jpg']},
+    {id:'DEMO-A020',codice:'COM-010',modello:'Hub USB 4 porte',categoria:'Elettronica',descrizione:'Hub compatto con quattro porte USB.',fornitore:'Fornitore Demo',materiale:'ABS',variante:'4 porte',colore:'Nero',misura:'Compatto',costoEur:10,prezzoVendita:19,disponibile:true,nonDisponibile:false,foto:['demo-photos/DEMO-A020-1.jpg','demo-photos/DEMO-A020-2.jpg','demo-photos/DEMO-A020-3.jpg','demo-photos/DEMO-A020-4.jpg','demo-photos/DEMO-A020-5.jpg','demo-photos/DEMO-A020-6.jpg']}
   ].map((a,i)=>({...a,createdAt:new Date(Date.now()-(i+4)*86400000).toISOString(),_ts:Date.now()-(i+1)*50000,photoIds:[],promoAttiva:false}));
 
   const clienti=[
@@ -3542,6 +3541,8 @@ async function getSignedFotoUrl(path, seconds=5400){
 // Nome mantenuto per compatibilità con tutto il codice esistente.
 // Ora NON genera più URL pubblici: usa link firmati sul bucket articoli privato.
 async function getPublicFotoUrl(path){
+  const clean=String(path||'').trim();
+  if(/^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) return clean;
   return await getSignedFotoUrl(path);
 }
 
@@ -3683,7 +3684,7 @@ async function getArticleLocalPhotoSources(a){
     for(const src of a.foto.slice(0,MAX_ARTICLE_PHOTOS)){
       const clean=String(src||'').trim();
       if(!clean) continue;
-      if(isTemporaryLocalPhotoRef(clean) || /^data:/i.test(clean)) pushLocal(clean);
+      if(isTemporaryLocalPhotoRef(clean) || /^data:/i.test(clean) || /^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) pushLocal(clean);
     }
   }
 
@@ -3695,7 +3696,7 @@ async function getArticleCloudSourcePaths(a, opts={}){
   const seen=new Set();
   const pushCloud=(src)=>{
     const clean=String(src||'').trim();
-    if(!clean || isTemporaryLocalPhotoRef(clean)) return;
+    if(!clean || isTemporaryLocalPhotoRef(clean) || /^(?:\.\/)?demo-photos\//i.test(clean) || /^cat-[a-z0-9_-]+\.(?:jpg|jpeg|png|webp)$/i.test(clean)) return;
     const normalized=(/^https?:\/\//i.test(clean)) ? clean : clean.replace(/^\/+/, '').replace(new RegExp('^'+SUPABASE_BUCKET+'\/'), '');
     const key=canonicalPhotoSourceKey(normalized) || normalized;
     if(!key || seen.has(key)) return;
@@ -8338,7 +8339,7 @@ function renderPageState(name){
   const sec=document.getElementById('sec_'+name); if(sec) sec.classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.go===name));
   document.querySelectorAll('.navBottom button').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
-  document.querySelectorAll('[data-menu-page]').forEach(b=>b.classList.toggle('active', b.dataset.menuPage===name));
+  document.querySelectorAll('#sideMenu [data-go]').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
 }
 function currentHistoryPage(){
   return (history.state&&history.state.page) || location.hash.replace('#','') || 'home';
@@ -9393,7 +9394,7 @@ function refreshArticlePreviewFilters(){
   if(qualitySel){
     const prev=String(qualitySel.value||'').trim();
     const options=articleQualityOptions(db);
-    qualitySel.innerHTML='<option value="">Tutte le qualità</option>'+options.map(q=>`<option value="${esc(q)}">${esc(q)}</option>`).join('');
+    qualitySel.innerHTML='<option value=""></option>';
     qualitySel.value=options.includes(prev)?prev:'';
   }
 }
@@ -9796,44 +9797,10 @@ function articleCostInfoHtml(a){
   const usdText=(Number.isFinite(info.usd)&&info.usd>0)?` <span>(${money(info.usd)} USD)</span>`:'';
   return `<div class="costMeta">Costo: ${money(info.eur)} €${usdText}</div>`;
 }
-function articleMinimumPriceWarningHtml(a){
-  const costInfo=articleCostInfo(a);
-  if(!costInfo||!(Number(costInfo.eur)>0)) return '';
-  const qualKey=normalizeQualityValue(articleQualityLabel(a)).toUpperCase();
-  const profitMin=recommendedProfitByQuality(Number(costInfo.eur),qualKey==='ORIGINALE'?'ORIGINALE':'STANDARD');
-  const minimum=roundDown5(Number(costInfo.eur)+Number(profitMin||0));
-  if(!(minimum>0)) return '';
-  const activePrice=Number(currentPrice(a)||0);
-  if(!(activePrice>0)) return '';
-  const deficit=minimum-activePrice;
-  if(deficit<5) return '';
-  const shownDeficit=roundDown5(deficit);
-  return `<div style="margin-top:10px;padding:10px 12px;border:1px solid #dc2626;border-radius:12px;background:#fef2f2;color:#991b1b;font-weight:900;line-height:1.35">⚠️ Sotto risultato: minimo ${Math.round(minimum)} €. Sei sotto di ${Math.round(shownDeficit)} €.</div>`;
-}
-function articleUnderMarginListBadgeHtml(a){
-  const costInfo=articleCostInfo(a);
-  if(!costInfo||!(Number(costInfo.eur)>0)) return '';
-  const qualKey=normalizeQualityValue(articleQualityLabel(a)).toUpperCase();
-  const profitMin=recommendedProfitByQuality(Number(costInfo.eur),qualKey==='ORIGINALE'?'ORIGINALE':'STANDARD');
-  const minimum=roundDown5(Number(costInfo.eur)+Number(profitMin||0));
-  const activePrice=Number(currentPrice(a)||0);
-  if(!(minimum>0) || !(activePrice>0)) return '';
-  const deficit=minimum-activePrice;
-  if(deficit<5) return '';
-  const shownDeficit=roundDown5(deficit);
-  return `<div class="articleUnderMarginList">⚠️ SOTTO MARGINE DI ${Math.round(shownDeficit)} €</div>`;
-}
+function articleMinimumPriceWarningHtml(a){ return ''; }
+function articleUnderMarginListBadgeHtml(a){ return ''; }
 
-function articleMarginInfoHtml(a){
-  const info=articleMarginInfo(a);
-  const costHtml=articleCostInfoHtml(a);
-  const minHtml=articleMinimumPriceWarningHtml(a);
-  if(!info) return `<div class="pill">Risultato non disponibile</div><div class="marginMeta">Serve un costo reale oppure una stima accettata.</div>${costHtml}${minHtml}`;
-  const toneClass=info.tone==='good'?'marginGood':(info.tone==='mid'?'marginMid':'marginLow');
-  const pctText=info.pct?` • ${info.pct}%`:'';
-  const note=info.estimated?'<div class="marginMeta estimatedCostText">Valore ipotetico: non è guadagno verificato.</div>':'';
-  return `<div class="pill ${toneClass}">${esc(info.label)}</div><div class="marginMeta">${money(info.amount)}${pctText}</div>${note}${costHtml}${minHtml}`;
-}
+function articleMarginInfoHtml(a){ return ''; }
 function articleSearchHay(a){
   const catLabel=displayCategoryValue(a?.categoria);
   const brandLabel=displayBrandValue(a?.brand);
@@ -10181,9 +10148,7 @@ function renderArt(){
     const unavailable=articleAvailabilityBadge(a);
     const blocked=isArticleUnavailable(a);
     const photoLine=articlePhotoCountText(a);
-    const qualityRaw=articleQualityLabel(a);
-    const qualityLine=isOriginalQualityArticle(a) ? 'QUALITÀ ORIGINALE' : qualityRaw;
-    const metaLine=[qualityLine, photoLine].filter(Boolean).join(' • ');
+    const metaLine=[photoLine].filter(Boolean).join(' • ');
     const notePreview=normalizeSpaceText(a.note||'');
     const noteHtml=notePreview ? `<div class="artCardNote" title="${esc(notePreview)}">${esc(notePreview)}</div>` : '';
     const promoActive=promoValid(a);
@@ -16200,7 +16165,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./service-worker.js?v=1.0.110-demo', { updateViaCache:'none' }).then(async reg=>{
+    navigator.serviceWorker.register('./service-worker.js?v=1.0.115', { updateViaCache:'none' }).then(async reg=>{
       try{ await reg.update(); }catch(_e){}
     }).catch(err=>console.warn('Registrazione service worker fallita', err));
   }, {once:true});
@@ -16310,6 +16275,9 @@ if('serviceWorker' in navigator){
 })();
 </script>
 
+
+
+
 <script>
 (function(){
   function els(){
@@ -16335,36 +16303,22 @@ if('serviceWorker' in navigator){
     menu.setAttribute('aria-hidden','true');
     btn?.setAttribute('aria-expanded','false');
     document.body.classList.remove('sideMenuOpen');
-    setTimeout(()=>{if(!menu.classList.contains('open')) backdrop.hidden=true;},210);
+    setTimeout(()=>{ if(!menu.classList.contains('open')) backdrop.hidden=true; },210);
   }
-  function navigateFromMenu(page){
-    const allowed=['home','articoli','clienti','ordini','finanze','social','impostazioni'];
-    if(!allowed.includes(page)) return;
-    closeMenu();
-    if(page==='ordini') orderListMode='all';
-    renderPageState(page);
-    renderActivePage(page);
-    const state={page};
-    if(page==='articoli') state.artBrowse={...artBrowseState};
-    if(page==='ordini') state.orderListMode=orderListMode;
-    history.pushState(state,'','#'+page);
-    window.scrollTo(0,0);
-  }
-
   document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('hamburgerBtn')?.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();openMenu();});
-    document.getElementById('sideMenuClose')?.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();closeMenu();});
+    document.getElementById('hamburgerBtn')?.addEventListener('click',(e)=>{
+      e.preventDefault(); e.stopPropagation(); openMenu();
+    });
+    document.getElementById('sideMenuClose')?.addEventListener('click',(e)=>{
+      e.preventDefault(); e.stopPropagation(); closeMenu();
+    });
     document.getElementById('sideMenuBackdrop')?.addEventListener('click',closeMenu);
-    document.querySelectorAll('[data-menu-page]').forEach(btn=>{
-      btn.addEventListener('click',(e)=>{
-        e.preventDefault();
-        e.stopPropagation();
-        navigateFromMenu(btn.dataset.menuPage||'home');
-      });
+    // Il click di navigazione viene gestito dal router principale data-go,
+    // lo stesso usato dai pulsanti in basso. Qui chiudiamo soltanto il pannello.
+    document.querySelectorAll('#sideMenu [data-go]').forEach(btn=>{
+      btn.addEventListener('click',()=>closeMenu());
     });
   });
-
-  window.addEventListener('popstate',closeMenu);
 })();
 </script>
 
