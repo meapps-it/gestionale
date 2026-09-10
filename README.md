@@ -1,7 +1,21 @@
-# Gestionale Nativo - versione smartphone
+# Scadenze & Spese
 
-Per GitHub ti basta caricare:
-- codemagic.yaml
+Applicazione Android nativa offline per gestire scadenze, spese ricorrenti e voci miste.
 
-Codemagic crea automaticamente l'intero progetto Android durante la build.
-Non devi creare né caricare la cartella app.
+## Stack
+
+- Kotlin e Jetpack Compose
+- Room per i dati locali
+- WorkManager per i promemoria persistenti
+- Storage Access Framework per backup e ripristino
+- Material 3 con font di sistema Android
+
+## Build
+
+```bash
+./gradlew assembleDebug
+./gradlew bundleRelease
+```
+
+Gli artefatti vengono prodotti in `app/build/outputs/apk/debug` e
+`app/build/outputs/bundle/release`. Codemagic esegue entrambe le build.
