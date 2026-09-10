@@ -140,15 +140,29 @@ workflows:
           import androidx.compose.ui.Alignment
           import androidx.compose.ui.Modifier
           import androidx.compose.ui.graphics.Color
+          import androidx.compose.ui.text.TextStyle
+          import androidx.compose.ui.text.font.FontFamily
           import androidx.compose.ui.text.font.FontWeight
           import androidx.compose.ui.unit.dp
           import androidx.compose.ui.unit.sp
+
+          private val SystemTypography = Typography(
+              bodyLarge = TextStyle(fontFamily = FontFamily.SansSerif),
+              bodyMedium = TextStyle(fontFamily = FontFamily.SansSerif),
+              bodySmall = TextStyle(fontFamily = FontFamily.SansSerif),
+              titleLarge = TextStyle(fontFamily = FontFamily.SansSerif),
+              titleMedium = TextStyle(fontFamily = FontFamily.SansSerif),
+              titleSmall = TextStyle(fontFamily = FontFamily.SansSerif),
+              labelLarge = TextStyle(fontFamily = FontFamily.SansSerif),
+              labelMedium = TextStyle(fontFamily = FontFamily.SansSerif),
+              labelSmall = TextStyle(fontFamily = FontFamily.SansSerif)
+          )
 
           class MainActivity : ComponentActivity() {
               override fun onCreate(savedInstanceState: Bundle?) {
                   super.onCreate(savedInstanceState)
                   setContent {
-                      MaterialTheme {
+                      MaterialTheme(typography = SystemTypography) {
                           GestionaleApp()
                       }
                   }
@@ -210,13 +224,13 @@ workflows:
                   modifier = Modifier
                       .fillMaxWidth()
                       .background(Color(0xFF10182B))
-                      .padding(horizontal = 20.dp, vertical = 20.dp),
+                      .padding(horizontal = 16.dp, vertical = 12.dp),
                   verticalAlignment = Alignment.CenterVertically
               ) {
                   Text(
                       text = "Gestionale",
                       color = Color.White,
-                      fontSize = 30.sp,
+                      fontSize = 18.sp,
                       fontWeight = FontWeight.Bold,
                       modifier = Modifier.weight(1f)
                   )
@@ -224,8 +238,8 @@ workflows:
                   IconButton(
                       onClick = {},
                       modifier = Modifier
-                          .size(48.dp)
-                          .background(Color(0xFF202B44), RoundedCornerShape(14.dp))
+                          .size(40.dp)
+                          .background(Color(0xFF202B44), RoundedCornerShape(12.dp))
                   ) {
                       Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
                   }
@@ -238,19 +252,19 @@ workflows:
                   modifier = modifier
                       .fillMaxSize()
                       .verticalScroll(rememberScrollState())
-                      .padding(18.dp),
-                  verticalArrangement = Arrangement.spacedBy(14.dp)
+                      .padding(14.dp),
+                  verticalArrangement = Arrangement.spacedBy(10.dp)
               ) {
                   Text(
                       text = "Dashboard",
-                      fontSize = 26.sp,
+                      fontSize = 22.sp,
                       fontWeight = FontWeight.Bold,
                       color = Color(0xFF111827)
                   )
 
                   Row(
                       modifier = Modifier.fillMaxWidth(),
-                      horizontalArrangement = Arrangement.spacedBy(12.dp)
+                      horizontalArrangement = Arrangement.spacedBy(10.dp)
                   ) {
                       StatCard(
                           title = "Ordini aperti",
@@ -278,7 +292,7 @@ workflows:
 
                   Text(
                       text = "Ultimi ordini",
-                      fontSize = 22.sp,
+                      fontSize = 18.sp,
                       fontWeight = FontWeight.Bold,
                       color = Color(0xFF111827),
                       modifier = Modifier.padding(top = 8.dp)
@@ -302,29 +316,31 @@ workflows:
           ) {
               Card(
                   modifier = modifier,
-                  shape = RoundedCornerShape(20.dp),
+                  shape = RoundedCornerShape(18.dp),
                   colors = CardDefaults.cardColors(containerColor = Color.White),
                   elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
               ) {
                   Column(
-                      modifier = Modifier.padding(18.dp),
-                      verticalArrangement = Arrangement.spacedBy(6.dp)
+                      modifier = Modifier
+                          .heightIn(min = 96.dp)
+                          .padding(12.dp),
+                      verticalArrangement = Arrangement.spacedBy(4.dp)
                   ) {
                       Text(
                           text = title.uppercase(),
-                          fontSize = 13.sp,
+                          fontSize = 10.sp,
                           fontWeight = FontWeight.SemiBold,
                           color = Color(0xFF687385)
                       )
                       Text(
                           text = value,
-                          fontSize = 30.sp,
+                          fontSize = 22.sp,
                           fontWeight = FontWeight.Bold,
                           color = valueColor
                       )
                       Text(
                           text = subtitle,
-                          fontSize = 13.sp,
+                          fontSize = 11.sp,
                           color = Color(0xFF687385)
                       )
                   }
@@ -340,12 +356,12 @@ workflows:
                   modifier = Modifier.fillMaxWidth()
               ) {
                   Row(
-                      modifier = Modifier.padding(16.dp),
+                      modifier = Modifier.padding(12.dp),
                       verticalAlignment = Alignment.CenterVertically
                   ) {
                       Column(modifier = Modifier.weight(1f)) {
-                          Text(title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                          Text(customer, fontSize = 13.sp, color = Color(0xFF687385))
+                          Text(title, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                          Text(customer, fontSize = 12.sp, color = Color(0xFF687385))
                       }
                       Text(
                           text = status,
