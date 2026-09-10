@@ -1,7 +1,7 @@
-package com.meapps.gestionale.util
+package com.meapps.scadenzespese.util
 
-import com.meapps.gestionale.data.EntryEntity
-import com.meapps.gestionale.data.FrequencyUnit
+import com.meapps.scadenzespese.data.EntryEntity
+import com.meapps.scadenzespese.data.FrequencyUnit
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

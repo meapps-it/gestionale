@@ -1,4 +1,4 @@
-package com.meapps.gestionale.data
+package com.meapps.scadenzespese.data
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.meapps.gestionale.data.*
-import com.meapps.gestionale.ui.theme.Danger
-import com.meapps.gestionale.ui.theme.Positive
-import com.meapps.gestionale.util.date
-import com.meapps.gestionale.util.euro
+import com.meapps.scadenzespese.data.*
+import com.meapps.scadenzespese.ui.theme.Danger
+import com.meapps.scadenzespese.ui.theme.Positive
+import com.meapps.scadenzespese.util.date
+import com.meapps.scadenzespese.util.euro
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 import kotlin.math.roundToInt

@@ -1,4 +1,4 @@
-package com.meapps.gestionale.data
+package com.meapps.scadenzespese.data
 
 import android.content.Context
 import androidx.room.*

@@ -1,7 +1,7 @@
-package com.meapps.gestionale
+package com.meapps.scadenzespese
 
-import com.meapps.gestionale.data.*
-import com.meapps.gestionale.util.occurrenceDates
+import com.meapps.scadenzespese.data.*
+import com.meapps.scadenzespese.util.occurrenceDates
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate

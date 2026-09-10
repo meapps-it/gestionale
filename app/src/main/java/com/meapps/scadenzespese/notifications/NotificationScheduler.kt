@@ -1,4 +1,4 @@
-package com.meapps.gestionale.notifications
+package com.meapps.scadenzespese.notifications
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -8,11 +8,11 @@ import android.content.pm.PackageManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
-import com.meapps.gestionale.GestionaleApplication
-import com.meapps.gestionale.data.EntryEntity
-import com.meapps.gestionale.data.EntryStatus
-import com.meapps.gestionale.data.EntryType
-import com.meapps.gestionale.util.euro
+import com.meapps.scadenzespese.GestionaleApplication
+import com.meapps.scadenzespese.data.EntryEntity
+import com.meapps.scadenzespese.data.EntryStatus
+import com.meapps.scadenzespese.data.EntryType
+import com.meapps.scadenzespese.util.euro
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime

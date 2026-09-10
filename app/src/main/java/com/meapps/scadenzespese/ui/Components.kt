@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,11 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.meapps.gestionale.data.EntryStatus
-import com.meapps.gestionale.data.EntryWithCategory
-import com.meapps.gestionale.ui.theme.*
-import com.meapps.gestionale.util.date
-import com.meapps.gestionale.util.euro
+import com.meapps.scadenzespese.data.EntryStatus
+import com.meapps.scadenzespese.data.EntryWithCategory
+import com.meapps.scadenzespese.ui.theme.*
+import com.meapps.scadenzespese.util.date
+import com.meapps.scadenzespese.util.euro
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 

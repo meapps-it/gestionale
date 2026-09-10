@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui.theme
+package com.meapps.scadenzespese.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

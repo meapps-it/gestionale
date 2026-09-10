@@ -1,15 +1,15 @@
-package com.meapps.gestionale.backup
+package com.meapps.scadenzespese.backup
 
 import android.content.Context
 import android.net.Uri
-import com.meapps.gestionale.data.*
+import com.meapps.scadenzespese.data.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 class BackupManager(private val context: Context, private val repository: AppRepository) {
     suspend fun exportBackup(uri: Uri) {
         val s = repository.snapshots()
-        val root = JSONObject().put("format", "com.meapps.gestionale.backup").put("version", 1)
+        val root = JSONObject().put("format", "com.meapps.scadenzespese.backup").put("version", 1)
         root.put("categories", JSONArray(s.categories.map { JSONObject()
             .put("id",it.id).put("name",it.name).put("icon",it.icon).put("builtIn",it.builtIn) }))
         root.put("entries", JSONArray(s.entries.map { JSONObject()
@@ -27,7 +27,7 @@ class BackupManager(private val context: Context, private val repository: AppRep
     suspend fun importBackup(uri: Uri) {
         val text = context.contentResolver.openInputStream(uri)!!.bufferedReader().use { it.readText() }
         val root = JSONObject(text)
-        require(root.getString("format") == "com.meapps.gestionale.backup") { "File di backup non valido" }
+        require(root.getString("format") == "com.meapps.scadenzespese.backup") { "File di backup non valido" }
         require(root.getInt("version") == 1) { "Versione backup non supportata" }
         fun JSONArray.objects() = (0 until length()).map { getJSONObject(it) }
         val cats = root.getJSONArray("categories").objects().map { CategoryEntity(it.getLong("id"),

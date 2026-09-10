@@ -1,4 +1,4 @@
-package com.meapps.gestionale
+package com.meapps.scadenzespese
 
 import android.Manifest
 import android.os.Build
@@ -12,8 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.meapps.gestionale.ui.GestionaleApp
-import com.meapps.gestionale.ui.theme.GestionaleTheme
+import com.meapps.scadenzespese.ui.GestionaleApp
+import com.meapps.scadenzespese.ui.theme.GestionaleTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

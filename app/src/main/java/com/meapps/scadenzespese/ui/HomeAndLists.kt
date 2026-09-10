@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,10 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.meapps.gestionale.data.*
-import com.meapps.gestionale.ui.theme.Positive
-import com.meapps.gestionale.util.euro
-import com.meapps.gestionale.util.occurrenceDates
+import com.meapps.scadenzespese.data.*
+import com.meapps.scadenzespese.ui.theme.Positive
+import com.meapps.scadenzespese.util.euro
+import com.meapps.scadenzespese.util.occurrenceDates
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit

@@ -1,11 +1,11 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.meapps.gestionale.GestionaleApplication
-import com.meapps.gestionale.backup.BackupManager
-import com.meapps.gestionale.data.*
+import com.meapps.scadenzespese.GestionaleApplication
+import com.meapps.scadenzespese.backup.BackupManager
+import com.meapps.scadenzespese.data.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

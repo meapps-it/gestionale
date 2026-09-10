@@ -1,7 +1,7 @@
-package com.meapps.gestionale.data
+package com.meapps.scadenzespese.data
 
 import androidx.room.withTransaction
-import com.meapps.gestionale.notifications.NotificationScheduler
+import com.meapps.scadenzespese.notifications.NotificationScheduler
 import java.time.LocalDate
 
 class AppRepository(private val db: AppDatabase, private val scheduler: NotificationScheduler) {

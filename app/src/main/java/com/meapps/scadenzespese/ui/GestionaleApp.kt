@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.meapps.gestionale.data.EntryWithCategory
+import com.meapps.scadenzespese.data.EntryWithCategory
 
 enum class MainSection(val label: String) { HOME("Home"), DEADLINES("Scadenze"), EXPENSES("Spese"), CALENDAR("Calendario") }
 sealed interface Page { data object Main:Page; data object Form:Page; data class Detail(val id:Long):Page; data object Settings:Page }

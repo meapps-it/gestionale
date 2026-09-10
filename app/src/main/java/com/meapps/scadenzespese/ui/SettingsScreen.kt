@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
         }}}
         item{SectionTitle("Notifiche");Text("I promemoria sono locali e continuano a funzionare senza Internet. I permessi si gestiscono anche dalle impostazioni Android.")}
         item{SectionTitle("Privacy");Text("Tutti i dati restano sul dispositivo. L'app non usa account, pubblicità, tracciamento o servizi cloud.")}
-        item{SectionTitle("Informazioni");Text("Scadenze e Spese 1.0.0\nPackage: com.meapps.gestionale")}
+        item{SectionTitle("Informazioni");Text("Scadenze e Spese 1.0.0\nPackage: com.meapps.scadenzespese")}
     }
     confirmImport?.let{uri->AlertDialog(onDismissRequest={confirmImport=null},title={Text("Importare il backup?")},text={Text("I dati attuali verranno sostituiti. Questa operazione non può essere annullata.")},
         confirmButton={Button({scope.launch{runCatching{vm.backup.importBackup(uri)}.onSuccess{Toast.makeText(context,"Backup importato",Toast.LENGTH_SHORT).show()}.onFailure{Toast.makeText(context,it.message ?: "File non valido",Toast.LENGTH_LONG).show()}};confirmImport=null}){Text("Importa")}},

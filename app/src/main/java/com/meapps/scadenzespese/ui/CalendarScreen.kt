@@ -1,4 +1,4 @@
-package com.meapps.gestionale.ui
+package com.meapps.scadenzespese.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.meapps.gestionale.data.EntryWithCategory
-import com.meapps.gestionale.ui.theme.ActionBlue
+import com.meapps.scadenzespese.data.EntryWithCategory
+import com.meapps.scadenzespese.ui.theme.ActionBlue
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
