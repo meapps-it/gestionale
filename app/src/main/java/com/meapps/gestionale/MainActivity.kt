@@ -26,7 +26,13 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     if (Build.VERSION.SDK_INT >= 33) permission.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
-                GestionaleApp(theme) { value -> theme=value; prefs.edit().putString("theme",value).apply() }
+                GestionaleApp(
+                    theme = theme,
+                    onThemeChange = { value: String ->
+                        theme = value
+                        prefs.edit().putString("theme", value).apply()
+                    }
+                )
             }
         }
     }

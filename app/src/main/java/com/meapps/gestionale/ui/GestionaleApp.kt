@@ -14,7 +14,11 @@ import com.meapps.gestionale.data.EntryWithCategory
 enum class MainSection(val label: String) { HOME("Home"), DEADLINES("Scadenze"), EXPENSES("Spese"), CALENDAR("Calendario") }
 sealed interface Page { data object Main:Page; data object Form:Page; data class Detail(val id:Long):Page; data object Settings:Page }
 
-@Composable fun GestionaleApp(theme:String, onThemeChange:(String)->Unit, vm: AppViewModel = viewModel()) {
+@Composable fun GestionaleApp(
+    theme: String,
+    onThemeChange: (String) -> Unit,
+    vm: AppViewModel = viewModel()
+) {
     val entries by vm.entries.collectAsState()
     val categories by vm.categories.collectAsState()
     var section by remember { mutableStateOf(MainSection.HOME) }
@@ -24,7 +28,7 @@ sealed interface Page { data object Main:Page; data object Form:Page; data class
     BackHandler(page !is Page.Main) { page=Page.Main }
 
     Scaffold(
-        topBar={ AppHeader { menu=true } },
+        topBar = { AppHeader(onMenu = { menu = true }) },
         bottomBar={ if(page is Page.Main) NavigationBar {
             listOf(MainSection.HOME to Icons.Default.Home, MainSection.DEADLINES to Icons.Default.Event,
                 MainSection.EXPENSES to Icons.Default.Euro, MainSection.CALENDAR to Icons.Default.CalendarMonth).forEach { (item,icon) ->
@@ -41,10 +45,20 @@ sealed interface Page { data object Main:Page; data object Form:Page; data class
                     MainSection.EXPENSES -> ExpensesScreen(entries)
                     MainSection.CALENDAR -> CalendarScreen(entries) { page=Page.Detail(it.id) }
                 }
-                Page.Form -> EntryFormScreen(categories, edit, onCancel={page=Page.Main}) { draft -> vm.save(draft){page=Page.Main} }
+                Page.Form -> EntryFormScreen(
+                    categories = categories,
+                    existing = edit,
+                    onCancel = { page = Page.Main },
+                    onSave = { draft -> vm.save(draft) { page = Page.Main } }
+                )
                 is Page.Detail -> entries.firstOrNull { it.id==p.id }?.let { item -> DetailScreen(item,vm,
                     onBack={page=Page.Main},onEdit={edit=item;page=Page.Form},onDeleted={page=Page.Main}) }
-                Page.Settings -> SettingsScreen(vm, theme, onThemeChange, onBack={page=Page.Main})
+                Page.Settings -> SettingsScreen(
+                    vm = vm,
+                    theme = theme,
+                    onThemeChange = onThemeChange,
+                    onBack = { page = Page.Main }
+                )
             }
         }
     }
