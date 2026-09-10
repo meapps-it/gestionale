@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable fun SettingsScreen(vm:AppViewModel,theme:String,onThemeChange:(String)->Unit,onBack:()->Unit){
     val categories by vm.categories.collectAsState();val context=LocalContext.current;val scope=rememberCoroutineScope()
     var name by remember{mutableStateOf("")};var confirmImport by remember{mutableStateOf<android.net.Uri?>(null)}

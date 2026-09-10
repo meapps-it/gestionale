@@ -30,6 +30,7 @@ import kotlin.math.roundToInt
     var renewal by remember { mutableStateOf(existing?.renewalMode ?: RenewalMode.MANUAL) }
     var reminders by remember { mutableStateOf(setOf(30,15,7,1,0)) }
     var customReminder by remember { mutableStateOf("") }; var error by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(categories) { if(category==0L) category=categories.firstOrNull()?.id ?: 0L }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(14.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
         SectionTitle(if(existing==null) "Nuova voce" else "Modifica voce")
         OutlinedTextField(name,{name=it},Modifier.fillMaxWidth(),label={Text("Nome")},singleLine=true)

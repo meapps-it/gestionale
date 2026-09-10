@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -26,7 +27,7 @@ private val Dark = darkColorScheme(primary=Color(0xFF75A7FF), background=Color(0
     val view = LocalView.current
     if (!view.isInEditMode) {
         val window = (view.context as Activity).window
-        window.statusBarColor = Navy.value.toInt()
+        window.statusBarColor = Navy.toArgb()
         WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
     }
     // Typography() keeps FontFamily.Default: Android can therefore expose the device font.

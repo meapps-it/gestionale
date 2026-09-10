@@ -5,7 +5,9 @@
         android:name=".GestionaleApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
+        android:icon="@drawable/app_icon"
         android:label="Scadenze e Spese"
+        android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gestionale">
         <activity android:name=".MainActivity" android:exported="true">
