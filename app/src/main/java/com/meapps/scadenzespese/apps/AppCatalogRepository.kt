@@ -25,6 +25,8 @@ data class AppRelease(
     val apkPath: String,
     val changelog: String,
     val fileSize: Long?,
+    val isPublished: Boolean,
+    val publishedAt: String?,
     val createdAt: String
 )
 
@@ -53,6 +55,10 @@ data class CatalogApp(
 ) {
     val latestRelease: AppRelease?
         get() = releases.maxByOrNull { it.createdAt }
+
+    val latestPublishedRelease: AppRelease?
+        get() = releases.filter { it.isPublished }
+            .maxByOrNull { it.publishedAt ?: it.createdAt }
 }
 
 class AppCatalogRepository(private val context: Context) {
@@ -223,7 +229,8 @@ class AppCatalogRepository(private val context: Context) {
         uri: Uri,
         versionName: String,
         versionCode: Int?,
-        changelog: String
+        changelog: String,
+        publish: Boolean
     ) {
         val path = uploadObject(appId, "releases", uri)
         val fileSize = queryFileSize(uri)
@@ -234,10 +241,25 @@ class AppCatalogRepository(private val context: Context) {
             .put("apk_path", path)
             .put("changelog", changelog.trim())
             .put("file_size", fileSize ?: JSONObject.NULL)
+            .put("is_published", publish)
+            .put("published_at", if (publish) Instant.now().toString() else JSONObject.NULL)
             .toString()
         request(
             "POST",
             "/rest/v1/me_app_releases",
+            body = payload,
+            prefer = "return=minimal"
+        )
+    }
+
+    suspend fun setReleasePublished(releaseId: String, published: Boolean) {
+        val payload = JSONObject()
+            .put("is_published", published)
+            .put("published_at", if (published) Instant.now().toString() else JSONObject.NULL)
+            .toString()
+        request(
+            "PATCH",
+            "/rest/v1/me_app_releases?id=eq.$releaseId",
             body = payload,
             prefer = "return=minimal"
         )
@@ -394,6 +416,8 @@ class AppCatalogRepository(private val context: Context) {
         apkPath = json.optString("apk_path", ""),
         changelog = json.optString("changelog", ""),
         fileSize = if (json.isNull("file_size")) null else json.optLong("file_size"),
+        isPublished = json.optBoolean("is_published", false),
+        publishedAt = if (json.isNull("published_at")) null else json.optString("published_at"),
         createdAt = json.optString("created_at", "")
     )
 
