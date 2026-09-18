@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "ME Apps",
+  "short_name": "ME Apps",
+  "description": "Catalogo pubblico delle applicazioni ME Apps",
+  "lang": "it-IT",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {"src":"../icon-v1-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"../icon-v1-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"../icon-v1-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}
