@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="ME Apps - catalogo pubblico delle applicazioni">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="../icon-v1-192.png">
+  <title>ME Apps</title>
+  <style>
+    :root{--navy:#0f172a;--ink:#111827;--muted:#697386;--bg:#f8fafc;--line:#cad2de;--blue:#2563eb;--green:#16a34a;--gold:#f59e0b}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    header{background:var(--navy);color:white;padding:max(18px,env(safe-area-inset-top)) 20px 22px}
+    .head{max-width:1050px;margin:auto;display:flex;gap:14px;align-items:center;justify-content:space-between}
+    h1{margin:0;font-size:32px;letter-spacing:-.8px}.sub{opacity:.8;font-weight:700;margin-top:3px}
+    button,.btn{border:0;border-radius:16px;padding:12px 16px;font-weight:800;font-size:15px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    #install{display:none;background:#fff;color:var(--navy)}
+    main{max-width:1050px;margin:auto;padding:22px 16px 42px}
+    .intro{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 2px 7px #0f172a0d;margin-bottom:18px}
+    .intro h2{margin:0 0 6px;font-size:25px}.intro p{margin:0;color:var(--muted);font-weight:650;line-height:1.45}
+    .status{margin-top:12px;font-size:13px;color:var(--muted);font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:0 2px 7px #0f172a0c;display:flex;flex-direction:column;gap:13px}
+    .apphead{display:flex;gap:13px;align-items:center}.icon{width:72px;height:72px;border-radius:18px;object-fit:cover;background:#eef3ff}
+    .fallback{width:72px;height:72px;border-radius:18px;background:#eef3ff;display:grid;place-items:center;font-size:30px;font-weight:900;color:var(--blue)}
+    .name{font-size:21px;font-weight:900;line-height:1.05}.desc{color:var(--muted);font-weight:650;margin-top:5px;line-height:1.35}
+    .version{display:inline-flex;align-items:center;gap:7px;background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0;border-radius:999px;padding:7px 10px;font-size:13px;font-weight:900;width:max-content}
+    .emptyver{background:#fff6dd;color:#a16207;border-color:#fde68a}
+    details{border-top:1px solid #e5e7eb;padding-top:10px}summary{cursor:pointer;font-weight:850;color:var(--blue)}
+    .bodytext{color:var(--muted);line-height:1.5;margin:10px 0}.changelog{font-size:14px;color:var(--muted);white-space:pre-wrap}
+    .shots{display:flex;overflow:auto;gap:8px;padding:3px 0 7px}.shot{height:180px;border-radius:14px;border:1px solid var(--line)}
+    .download{margin-top:auto;background:var(--blue);color:#fff;width:100%;min-height:48px}.download.disabled{background:#e5e7eb;color:#6b7280;pointer-events:none}
+    .error{background:#fff1f2;border:1px solid #fecdd3;color:#be123c;padding:14px;border-radius:18px;font-weight:750}
+    .empty{grid-column:1/-1;background:#fff;border:1px dashed var(--line);border-radius:24px;padding:26px;text-align:center;color:var(--muted);font-weight:750}
+    footer{text-align:center;color:var(--muted);font-size:12px;font-weight:700;padding:10px 16px 35px}
+  </style>
+</head>
+<body>
+<header><div class="head"><div><h1>ME Apps</h1><div class="sub">Applicazioni semplici. Utili davvero.</div></div><button id="install">Installa PWA</button></div></header>
+<main>
+  <section class="intro">
+    <h2>Le applicazioni disponibili</h2>
+    <p>Il catalogo è collegato direttamente al sistema ME Apps. Quando viene pubblicata una nuova versione, questa pagina si aggiorna automaticamente.</p>
+    <div class="status" id="status">Caricamento catalogo…</div>
+  </section>
+  <section id="error"></section>
+  <section class="grid" id="apps"></section>
+</main>
+<footer>ME Apps</footer>
+<script>
+const API="https://qfjwtawsqfwmsmrrgqfi.supabase.co/functions/v1/me-apps-catalog";
+const appsEl=document.getElementById("apps");
+const statusEl=document.getElementById("status");
+const errorEl=document.getElementById("error");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+function bytes(n){if(!n)return "";const m=n/1024/1024;return m>=1?m.toFixed(1)+" MB":Math.round(n/1024)+" KB"}
+function render(data,offline=false){
+  const apps=data?.apps||[];
+  errorEl.innerHTML="";
+  if(!apps.length){appsEl.innerHTML='<div class="empty">Nessuna app pubblicata al momento.</div>'}
+  else appsEl.innerHTML=apps.map(app=>{
+    const r=app.latestRelease;
+    const icon=app.iconUrl?'<img class="icon" src="'+esc(app.iconUrl)+'" alt="">':'<div class="fallback">'+esc((app.name||"M").slice(0,1).toUpperCase())+'</div>';
+    const version=r?'<div class="version">Versione '+esc(r.versionName)+(r.fileSize?" · "+bytes(r.fileSize):"")+'</div>':'<div class="version emptyver">In preparazione</div>';
+    const shots=(app.screenshots||[]).length?'<div class="shots">'+app.screenshots.map(s=>'<img class="shot" src="'+esc(s.url)+'" alt="'+esc(s.caption||app.name)+'">').join("")+'</div>':"";
+    const extra=(app.description||r?.changelog||shots)?'<details><summary>Dettagli</summary>'+(app.description?'<div class="bodytext">'+esc(app.description)+'</div>':"")+(r?.changelog?'<div class="changelog"><strong>Novità</strong><br>'+esc(r.changelog)+'</div>':"")+shots+'</details>':"";
+    const download=r?.downloadUrl?'<a class="btn download" href="'+esc(r.downloadUrl)+'" download>Scarica APK</a>':'<span class="btn download disabled">APK non ancora pubblicata</span>';
+    return '<article class="card"><div class="apphead">'+icon+'<div><div class="name">'+esc(app.name)+'</div><div class="desc">'+esc(app.shortDescription||"")+'</div></div></div>'+version+extra+download+'</article>'
+  }).join("");
+  const d=new Date(data.generatedAt||Date.now());
+  statusEl.textContent=(offline?"Dati salvati sul dispositivo · ":"Aggiornato automaticamente · ")+d.toLocaleString("it-IT",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"});
+}
+async function loadCatalog(){
+  try{
+    const r=await fetch(API,{cache:"no-store"});
+    if(!r.ok)throw new Error("Catalogo non disponibile");
+    const data=await r.json();
+    localStorage.setItem("meapps_catalog",JSON.stringify(data));
+    render(data,false);
+  }catch(e){
+    const cached=localStorage.getItem("meapps_catalog");
+    if(cached){render(JSON.parse(cached),true);errorEl.innerHTML='<div class="error">Connessione assente. Sto mostrando l’ultima versione del catalogo salvata.</div>'}
+    else{errorEl.innerHTML='<div class="error">Impossibile caricare il catalogo in questo momento.</div>';statusEl.textContent="Catalogo non disponibile"}
+  }
+}
+loadCatalog();
+setInterval(()=>{if(!document.hidden)loadCatalog()},30000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadCatalog()});
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js"));
+let deferredPrompt;const install=document.getElementById("install");
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;install.style.display="inline-flex"});
+install.addEventListener("click",async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;install.style.display="none"});
+</script>
+</body>
+</html>
