@@ -379,7 +379,7 @@ private fun LoginScreen(
                 .padding(horizontal = 20.dp, vertical = 22.dp)
         ) {
             Column {
-                Text("Gestionale", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Black)
+                Text("Me Apps", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Black)
                 Text("Archivio App", color = Color.White.copy(alpha = .82f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
         }
@@ -453,7 +453,7 @@ private fun GestionaleHeader(
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Column {
-            Text("Gestionale", color = Color.White, fontSize = 29.sp, fontWeight = FontWeight.Black)
+            Text("Me Apps", color = Color.White, fontSize = 29.sp, fontWeight = FontWeight.Black)
             Text(now.format(formatter), color = Color.White.copy(alpha = .82f), fontSize = 15.sp, fontWeight = FontWeight.Bold)
         }
 
