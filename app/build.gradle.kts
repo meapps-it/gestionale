@@ -26,7 +26,6 @@ android {
     kotlinOptions { jvmTarget = "17" }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
 }
-ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
