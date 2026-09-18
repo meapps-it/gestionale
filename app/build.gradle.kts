@@ -14,7 +14,9 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"\n        buildConfigField("String", "SUPABASE_URL", "\\\"https://qfjwtawsqfwmsmrrgqfi.supabase.co\\\"")\n        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\\\"sb_publishable_-EUVjwsk3txKk2Opqrc7Kw_xFNa9Hw1\\\"")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "SUPABASE_URL", "\"https://qfjwtawsqfwmsmrrgqfi.supabase.co\"")
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"sb_publishable_-EUVjwsk3txKk2Opqrc7Kw_xFNa9Hw1\"")
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions {
