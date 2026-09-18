@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
             Text("Il ripristino sostituisce i dati presenti solo dopo conferma.",style=MaterialTheme.typography.bodySmall)
         }}}
         item{SectionTitle("Notifiche");Text("I promemoria sono locali e continuano a funzionare senza Internet. I permessi si gestiscono anche dalle impostazioni Android.")}
-        item{SectionTitle("Privacy");Text("Tutti i dati restano sul dispositivo. L'app non usa account, pubblicità, tracciamento o servizi cloud.")}
+        item{SectionTitle("Privacy");Text("Scadenze, spese, categorie e promemoria restano sul dispositivo. Solo la sezione Le mie App usa Supabase per archiviare APK, icone, screenshot e descrizioni. Nessuna pubblicità o tracciamento.")}
         item{SectionTitle("Informazioni");Text("Scadenze e Spese 1.0.0\nPackage: com.meapps.scadenzespese")}
     }
     confirmImport?.let{uri->AlertDialog(onDismissRequest={confirmImport=null},title={Text("Importare il backup?")},text={Text("I dati attuali verranno sostituiti. Questa operazione non può essere annullata.")},

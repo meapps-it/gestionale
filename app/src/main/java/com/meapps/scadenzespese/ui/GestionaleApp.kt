@@ -7,12 +7,17 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.meapps.scadenzespese.data.EntryWithCategory
 
 enum class MainSection(val label: String) { HOME("Home"), DEADLINES("Scadenze"), EXPENSES("Spese"), CALENDAR("Calendario") }
-sealed interface Page { data object Main:Page; data object Form:Page; data class Detail(val id:Long):Page; data object Settings:Page }
+sealed interface Page {
+    data object Main:Page
+    data object Form:Page
+    data class Detail(val id:Long):Page
+    data object Settings:Page
+    data object Apps:Page
+}
 
 @Composable fun GestionaleApp(
     theme: String,
@@ -59,10 +64,16 @@ sealed interface Page { data object Main:Page; data object Form:Page; data class
                     onThemeChange = onThemeChange,
                     onBack = { page = Page.Main }
                 )
+                Page.Apps -> AppsScreen(onBack = { page = Page.Main })
             }
         }
     }
     DropdownMenu(expanded=menu,onDismissRequest={menu=false}) {
+        DropdownMenuItem(
+            text={Text("Le mie App")},
+            leadingIcon={Icon(Icons.Default.Apps,null)},
+            onClick={menu=false;page=Page.Apps}
+        )
         DropdownMenuItem(text={Text("Categorie e impostazioni")},leadingIcon={Icon(Icons.Default.Settings,null)},onClick={menu=false;page=Page.Settings})
         DropdownMenuItem(text={Text("Privacy")},leadingIcon={Icon(Icons.Default.PrivacyTip,null)},onClick={menu=false;page=Page.Settings})
         DropdownMenuItem(text={Text("Informazioni")},leadingIcon={Icon(Icons.Default.Info,null)},onClick={menu=false;page=Page.Settings})
