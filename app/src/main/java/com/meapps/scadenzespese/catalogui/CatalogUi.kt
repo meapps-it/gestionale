@@ -24,9 +24,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -42,6 +44,7 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.roundToInt
 
 private val Navy = Color(0xFF0F172A)
 private val Ink = Color(0xFF111827)
@@ -68,8 +71,13 @@ enum class CatalogSection(val label: String) {
 data class PendingApk(val app: CatalogApp, val uri: Uri)
 
 @Composable
-fun CatalogTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
+fun CatalogTheme(fontScale: Float = 1f, content: @Composable () -> Unit) {
+    val density = LocalDensity.current
+    val scaledDensity = remember(density.density, density.fontScale, fontScale) {
+        Density(density.density, density.fontScale * fontScale.coerceIn(0.80f, 1.40f))
+    }
+    CompositionLocalProvider(LocalDensity provides scaledDensity) {
+        MaterialTheme(
         colorScheme = lightColorScheme(
             primary = Blue,
             secondary = Cyan,
@@ -80,12 +88,16 @@ fun CatalogTheme(content: @Composable () -> Unit) {
             onSurface = Ink,
             error = Danger
         ),
-        content = content
-    )
+            content = content
+        )
+    }
 }
 
 @Composable
-fun CatalogRoot() {
+fun CatalogRoot(
+    fontScale: Float = 1f,
+    onFontScaleChange: (Float) -> Unit = {}
+) {
     val context = LocalContext.current
     val repo = remember { AppCatalogRepository(context.applicationContext) }
     val scope = rememberCoroutineScope()
@@ -103,6 +115,7 @@ fun CatalogRoot() {
     var pendingApk by remember { mutableStateOf<PendingApk?>(null) }
     var deleteTarget by remember { mutableStateOf<CatalogApp?>(null) }
     var menuOpen by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
 
     fun toast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -192,6 +205,11 @@ fun CatalogRoot() {
                     menuOpen = false
                     reload()
                 },
+                onSettings = {
+                    menuOpen = false
+                    detailAppId = null
+                    showSettings = true
+                },
                 onLogout = {
                     menuOpen = false
                     repo.logout()
@@ -201,7 +219,7 @@ fun CatalogRoot() {
             )
         },
         bottomBar = {
-            if (detailApp == null) BottomPills(section, onSection = { section = it })
+            if (detailApp == null && !showSettings) BottomPills(section, onSection = { section = it })
         }
     ) { padding ->
         Box(
@@ -210,7 +228,13 @@ fun CatalogRoot() {
                 .padding(padding)
                 .background(Bg)
         ) {
-            if (detailApp != null) {
+            if (showSettings) {
+                SettingsScreen(
+                    fontScale = fontScale,
+                    onFontScaleChange = onFontScaleChange,
+                    onBack = { showSettings = false }
+                )
+            } else if (detailApp != null) {
                 AppDetailScreen(
                     app = detailApp,
                     repo = repo,
@@ -432,6 +456,7 @@ private fun GestionaleHeader(
     menuOpen: Boolean,
     onDismissMenu: () -> Unit,
     onRefresh: () -> Unit,
+    onSettings: () -> Unit,
     onLogout: () -> Unit
 ) {
     var now by remember { mutableStateOf(LocalDateTime.now()) }
@@ -475,10 +500,108 @@ private fun GestionaleHeader(
                     onClick = onRefresh
                 )
                 DropdownMenuItem(
+                    text = { Text("Impostazioni") },
+                    leadingIcon = { Icon(Icons.Default.Settings, null) },
+                    onClick = onSettings
+                )
+                DropdownMenuItem(
                     text = { Text("Esci") },
                     leadingIcon = { Icon(Icons.Default.Logout, null) },
                     onClick = onLogout
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsScreen(
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit,
+    onBack: () -> Unit
+) {
+    val percent = (fontScale * 100f).roundToInt()
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().background(Bg),
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        item {
+            TextButton(onClick = onBack, contentPadding = PaddingValues(horizontal = 0.dp)) {
+                Icon(Icons.Default.ArrowBack, contentDescription = null)
+                Spacer(Modifier.width(6.dp))
+                Text("Indietro", fontWeight = FontWeight.Bold)
+            }
+        }
+        item {
+            Text("Impostazioni", fontSize = 28.sp, fontWeight = FontWeight.Black, color = Navy)
+            Spacer(Modifier.height(4.dp))
+            Text("Personalizza la visualizzazione dell'app.", color = Muted, fontWeight = FontWeight.Bold)
+        }
+        item {
+            WhiteCard {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("Dimensione testo", fontSize = 20.sp, fontWeight = FontWeight.Black)
+                        Text("Regola il font di tutta l'app", color = Muted, fontWeight = FontWeight.Bold)
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = SoftBlue
+                    ) {
+                        Text(
+                            "$percent%",
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            color = Blue,
+                            fontWeight = FontWeight.Black
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(18.dp))
+                Slider(
+                    value = fontScale.coerceIn(0.80f, 1.40f),
+                    onValueChange = onFontScaleChange,
+                    valueRange = 0.80f..1.40f,
+                    steps = 11
+                )
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("80%", color = Muted, fontSize = 13.sp)
+                    Text("100%", color = Muted, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    Text("140%", color = Muted, fontSize = 13.sp)
+                }
+
+                Spacer(Modifier.height(16.dp))
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color(0xFFF4F7FB),
+                    border = BorderStroke(1.dp, Line)
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("Anteprima", color = Muted, fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.height(4.dp))
+                        Text("Questo è il testo dell'app", fontWeight = FontWeight.Black)
+                        Text("La modifica viene applicata subito a schermate, pulsanti e menu.", color = Muted)
+                    }
+                }
+
+                Spacer(Modifier.height(14.dp))
+                OutlinedButton(
+                    onClick = { onFontScaleChange(1f) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    enabled = percent != 100
+                ) {
+                    Icon(Icons.Default.RestartAlt, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Ripristina 100%", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
