@@ -94,13 +94,14 @@ class AppCatalogRepository(private val context: Context) {
 
         // Verifica subito che l'account abbia i permessi admin per il catalogo.
         val probe = rawRequest(
-            method = "GET",
-            path = "/rest/v1/me_apps?select=id&limit=1",
-            body = null,
+            method = "POST",
+            path = "/rest/v1/rpc/is_me_apps_admin",
+            body = "{}",
             token = accessToken(),
             contentType = "application/json"
         )
-        if (probe.code !in 200..299) {
+        val allowed = probe.code in 200..299 && probe.body.trim().equals("true", ignoreCase = true)
+        if (!allowed) {
             logout()
             throw IllegalStateException("Questo account non ha accesso amministratore al catalogo App")
         }
