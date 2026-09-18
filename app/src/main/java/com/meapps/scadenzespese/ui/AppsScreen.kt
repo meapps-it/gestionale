@@ -344,7 +344,8 @@ fun AppsScreen(onBack: () -> Unit) {
                             uri = pending.uri,
                             versionName = versionName,
                             versionCode = versionCode,
-                            changelog = changelog
+                            changelog = changelog,
+                            publish = false
                         )
                     }.onSuccess {
                         toast("APK archiviato su Supabase")
