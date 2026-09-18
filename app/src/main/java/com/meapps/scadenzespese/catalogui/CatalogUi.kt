@@ -284,7 +284,21 @@ fun CatalogRoot(
                             apkPicker.launch(arrayOf("application/vnd.android.package-archive", "application/octet-stream"))
                         }
                     )
-                    CatalogSection.RELEASES -> ReleasesScreen(apps)
+                    CatalogSection.RELEASES -> ReleasesScreen(
+                        apps = apps,
+                        onTogglePublish = { release, published ->
+                            scope.launch {
+                                loading = true
+                                runCatching { repo.setReleasePublished(release.id, published) }
+                                    .onSuccess {
+                                        toast(if (published) "Versione pubblicata sul sito" else "Versione resa privata")
+                                        reload()
+                                    }
+                                    .onFailure { toast(it.message ?: "Errore aggiornamento versione") }
+                                loading = false
+                            }
+                        }
+                    )
                     CatalogSection.SITE -> SiteScreen(apps, repo, onOpen = { detailAppId = it.id })
                 }
             }
@@ -334,8 +348,9 @@ fun CatalogRoot(
     pendingApk?.let { pending ->
         ReleaseUploadDialog(
             appName = pending.app.name,
+            defaultPublish = pending.app.isPublished,
             onDismiss = { pendingApk = null },
-            onUpload = { versionName, versionCode, changelog ->
+            onUpload = { versionName, versionCode, changelog, publish ->
                 pendingApk = null
                 scope.launch {
                     loading = true
@@ -345,10 +360,11 @@ fun CatalogRoot(
                             uri = pending.uri,
                             versionName = versionName,
                             versionCode = versionCode,
-                            changelog = changelog
+                            changelog = changelog,
+                            publish = publish
                         )
                     }.onSuccess {
-                        toast("APK archiviato su Supabase")
+                        toast(if (publish) "APK archiviato e pubblicato sul sito" else "APK archiviato come privato")
                         reload()
                     }.onFailure { toast(it.message ?: "Errore caricamento APK") }
                     loading = false
@@ -1008,7 +1024,10 @@ private fun AppImage(app: CatalogApp, repo: AppCatalogRepository, modifier: Modi
 }
 
 @Composable
-private fun ReleasesScreen(apps: List<CatalogApp>) {
+private fun ReleasesScreen(
+    apps: List<CatalogApp>,
+    onTogglePublish: (AppRelease, Boolean) -> Unit
+) {
     val rows = remember(apps) {
         apps.flatMap { app -> app.releases.map { release -> app to release } }
             .sortedByDescending { it.second.createdAt }
@@ -1032,13 +1051,17 @@ private fun ReleasesScreen(apps: List<CatalogApp>) {
             }
         }
         items(rows, key = { it.second.id }) { pair ->
-            ReleaseRow(pair.first, pair.second)
+            ReleaseRow(pair.first, pair.second, onTogglePublish)
         }
     }
 }
 
 @Composable
-private fun ReleaseRow(app: CatalogApp, release: AppRelease) {
+private fun ReleaseRow(
+    app: CatalogApp,
+    release: AppRelease,
+    onTogglePublish: (AppRelease, Boolean) -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = Color.White,
@@ -1063,6 +1086,30 @@ private fun ReleaseRow(app: CatalogApp, release: AppRelease) {
             Column(horizontalAlignment = Alignment.End) {
                 Text(formatBytes(release.fileSize), fontWeight = FontWeight.Black)
                 Text(formatDate(release.createdAt), color = Muted, fontSize = 11.sp)
+                Spacer(Modifier.height(5.dp))
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = if (release.isPublished) SoftGreen else Color(0xFFFFF6DD),
+                    border = BorderStroke(1.dp, if (release.isPublished) Color(0xFF86EFAC) else Gold.copy(alpha = .45f))
+                ) {
+                    Text(
+                        if (release.isPublished) "Pubblica" else "Privata",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = if (release.isPublished) Green else Gold,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+                TextButton(
+                    onClick = { onTogglePublish(release, !release.isPublished) },
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                ) {
+                    Text(
+                        if (release.isPublished) "Rendi privata" else "Pubblica",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -1082,7 +1129,7 @@ private fun SiteScreen(apps: List<CatalogApp>, repo: AppCatalogRepository, onOpe
                 Text("Catalogo pubblico", fontSize = 28.sp, fontWeight = FontWeight.Black)
                 Spacer(Modifier.height(5.dp))
                 Text(
-                    "Queste sono le app che il futuro sito mostrerà. Database e file sono già separati dalla grafica, quindi il dominio dopo non ci obbliga a rifare tutto.",
+                    "Queste sono le app collegate alla PWA pubblica. Il sito legge direttamente le versioni pubblicate da Supabase: una nuova release pubblica compare senza modificare il sito.",
                     color = Muted,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 20.sp
@@ -1108,7 +1155,7 @@ private fun SiteScreen(apps: List<CatalogApp>, repo: AppCatalogRepository, onOpe
                     Column(Modifier.weight(1f)) {
                         Text(app.name, fontSize = 19.sp, fontWeight = FontWeight.Black)
                         Text(app.shortDescription.ifBlank { app.packageName }, color = Muted, maxLines = 2)
-                        Text("v" + (app.latestRelease?.versionName ?: "—"), color = Blue, fontWeight = FontWeight.Black)
+                        Text("v" + (app.latestPublishedRelease?.versionName ?: "—"), color = Blue, fontWeight = FontWeight.Black)
                     }
                     Icon(Icons.Default.ChevronRight, null, tint = Muted)
                 }
@@ -1395,12 +1442,14 @@ private fun AppEditorDialog(
 @Composable
 private fun ReleaseUploadDialog(
     appName: String,
+    defaultPublish: Boolean,
     onDismiss: () -> Unit,
-    onUpload: (String, Int?, String) -> Unit
+    onUpload: (String, Int?, String, Boolean) -> Unit
 ) {
     var versionName by remember { mutableStateOf("") }
     var versionCode by remember { mutableStateOf("") }
     var changelog by remember { mutableStateOf("") }
+    var publish by remember { mutableStateOf(defaultPublish) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1432,11 +1481,35 @@ private fun ReleaseUploadDialog(
                     minLines = 3,
                     shape = RoundedCornerShape(15.dp)
                 )
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(15.dp),
+                    color = if (publish) SoftGreen else Color(0xFFFFF6DD),
+                    border = BorderStroke(1.dp, if (publish) Color(0xFF86EFAC) else Gold.copy(alpha = .45f))
+                ) {
+                    Row(
+                        Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                if (publish) "Pubblica sul sito" else "Solo archivio privato",
+                                fontWeight = FontWeight.Black
+                            )
+                            Text(
+                                if (publish) "La PWA userà questa versione automaticamente." else "Resta visibile solo nel tuo amministrativo.",
+                                color = Muted,
+                                fontSize = 12.sp
+                            )
+                        }
+                        Switch(checked = publish, onCheckedChange = { publish = it })
+                    }
+                }
             }
         },
         confirmButton = {
             Button(
-                onClick = { onUpload(versionName, versionCode.toIntOrNull(), changelog) },
+                onClick = { onUpload(versionName, versionCode.toIntOrNull(), changelog, publish) },
                 enabled = versionName.isNotBlank()
             ) { Text("Carica", fontWeight = FontWeight.Black) }
         },
