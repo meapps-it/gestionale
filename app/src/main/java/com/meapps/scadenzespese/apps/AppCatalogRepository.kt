@@ -6,11 +6,17 @@ import android.provider.OpenableColumns
 import com.meapps.scadenzespese.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.BufferedSink
+import okio.source
 import org.json.JSONArray
 import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 data class CatalogApp(
     val id: String,
@@ -26,6 +32,11 @@ data class CatalogApp(
 
 class AppCatalogRepository(private val context: Context) {
     private val prefs = context.getSharedPreferences("me_apps_catalog", Context.MODE_PRIVATE)
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(120, TimeUnit.SECONDS)
+        .writeTimeout(120, TimeUnit.SECONDS)
+        .build()
 
     fun hasSession(): Boolean = !prefs.getString("access_token", null).isNullOrBlank()
     fun savedEmail(): String = prefs.getString("email", "") ?: ""
@@ -76,7 +87,7 @@ class AppCatalogRepository(private val context: Context) {
         val payload = JSONObject()
             .put("name", name.trim())
             .put("slug", slug.trim().lowercase())
-            .put("package_name", packageName.trim().ifBlank { JSONObject.NULL })
+            .put("package_name", if (packageName.isBlank()) JSONObject.NULL else packageName.trim())
             .put("short_description", shortDescription.trim())
             .put("description", description.trim())
             .put("is_published", isPublished)
@@ -202,40 +213,48 @@ class AppCatalogRepository(private val context: Context) {
         contentType: String,
         prefer: String? = null
     ): HttpResult {
-        val connection = (URL(BuildConfig.SUPABASE_URL + path).openConnection() as HttpURLConnection).apply {
-            requestMethod = method
-            connectTimeout = 20_000
-            readTimeout = 30_000
-            setRequestProperty("apikey", BuildConfig.SUPABASE_PUBLISHABLE_KEY)
-            setRequestProperty("Content-Type", contentType)
-            setRequestProperty("Accept", "application/json")
-            if (!token.isNullOrBlank()) setRequestProperty("Authorization", "Bearer $token")
-            if (!prefer.isNullOrBlank()) setRequestProperty("Prefer", prefer)
-            if (body != null) doOutput = true
+        val requestBody = body?.toRequestBody(contentType.toMediaTypeOrNull())
+        val builder = Request.Builder()
+            .url(BuildConfig.SUPABASE_URL + path)
+            .method(method, requestBody)
+            .header("apikey", BuildConfig.SUPABASE_PUBLISHABLE_KEY)
+            .header("Accept", "application/json")
+        if (!token.isNullOrBlank()) builder.header("Authorization", "Bearer $token")
+        if (!prefer.isNullOrBlank()) builder.header("Prefer", prefer)
+
+        client.newCall(builder.build()).execute().use { response ->
+            return HttpResult(response.code, response.body?.string().orEmpty())
         }
-        if (body != null) connection.outputStream.use { it.write(body.toByteArray(Charsets.UTF_8)) }
-        return connection.useResult()
     }
 
     private fun rawUpload(path: String, uri: Uri, token: String): HttpResult {
         val resolver = context.contentResolver
         val mime = resolver.getType(uri)
             ?: if (path.endsWith(".apk", true)) "application/vnd.android.package-archive" else "application/octet-stream"
-        val connection = (URL("${BuildConfig.SUPABASE_URL}/storage/v1/object/me-apps/$path").openConnection() as HttpURLConnection).apply {
-            requestMethod = "POST"
-            connectTimeout = 30_000
-            readTimeout = 120_000
-            doOutput = true
-            setChunkedStreamingMode(1024 * 1024)
-            setRequestProperty("apikey", BuildConfig.SUPABASE_PUBLISHABLE_KEY)
-            setRequestProperty("Authorization", "Bearer $token")
-            setRequestProperty("Content-Type", mime)
-            setRequestProperty("x-upsert", "false")
+
+        val body = object : RequestBody() {
+            override fun contentType() = mime.toMediaTypeOrNull()
+
+            override fun contentLength(): Long = queryFileSize(uri) ?: -1L
+
+            override fun writeTo(sink: BufferedSink) {
+                val input = resolver.openInputStream(uri)
+                    ?: throw IllegalStateException("Impossibile leggere il file selezionato")
+                input.source().use { source -> sink.writeAll(source) }
+            }
         }
-        resolver.openInputStream(uri)?.use { input ->
-            connection.outputStream.use { output -> input.copyTo(output, 1024 * 1024) }
-        } ?: throw IllegalStateException("Impossibile leggere il file selezionato")
-        return connection.useResult()
+
+        val request = Request.Builder()
+            .url("${BuildConfig.SUPABASE_URL}/storage/v1/object/me-apps/$path")
+            .post(body)
+            .header("apikey", BuildConfig.SUPABASE_PUBLISHABLE_KEY)
+            .header("Authorization", "Bearer $token")
+            .header("x-upsert", "false")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            return HttpResult(response.code, response.body?.string().orEmpty())
+        }
     }
 
     private fun refreshSessionInternal(): Boolean {
@@ -286,7 +305,7 @@ class AppCatalogRepository(private val context: Context) {
         id = json.getString("id"),
         slug = json.getString("slug"),
         name = json.getString("name"),
-        packageName = json.optString("package_name", ""),
+        packageName = if (json.isNull("package_name")) "" else json.optString("package_name", ""),
         shortDescription = json.optString("short_description", ""),
         description = json.optString("description", ""),
         iconPath = if (json.isNull("icon_path")) null else json.optString("icon_path"),
@@ -307,15 +326,4 @@ class AppCatalogRepository(private val context: Context) {
     }
 
     private data class HttpResult(val code: Int, val body: String)
-
-    private fun HttpURLConnection.useResult(): HttpResult {
-        return try {
-            val code = responseCode
-            val stream = if (code in 200..299) inputStream else errorStream
-            val body = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
-            HttpResult(code, body)
-        } finally {
-            disconnect()
-        }
-    }
 }
