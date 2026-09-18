@@ -18,6 +18,24 @@ import org.json.JSONObject
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
+data class AppRelease(
+    val id: String,
+    val versionName: String,
+    val versionCode: Int?,
+    val apkPath: String,
+    val changelog: String,
+    val fileSize: Long?,
+    val createdAt: String
+)
+
+data class AppScreenshot(
+    val id: String,
+    val storagePath: String,
+    val caption: String,
+    val sortOrder: Int,
+    val createdAt: String
+)
+
 data class CatalogApp(
     val id: String,
     val slug: String,
@@ -27,8 +45,15 @@ data class CatalogApp(
     val description: String,
     val iconPath: String?,
     val isPublished: Boolean,
-    val updatedAt: String?
-)
+    val publishedAt: String?,
+    val createdAt: String,
+    val updatedAt: String,
+    val releases: List<AppRelease> = emptyList(),
+    val screenshots: List<AppScreenshot> = emptyList()
+) {
+    val latestRelease: AppRelease?
+        get() = releases.maxByOrNull { it.createdAt }
+}
 
 class AppCatalogRepository(private val context: Context) {
     private val prefs = context.getSharedPreferences("me_apps_catalog", Context.MODE_PRIVATE)
@@ -40,6 +65,17 @@ class AppCatalogRepository(private val context: Context) {
 
     fun hasSession(): Boolean = !prefs.getString("access_token", null).isNullOrBlank()
     fun savedEmail(): String = prefs.getString("email", "") ?: ""
+    fun accessToken(): String = prefs.getString("access_token", "") ?: ""
+
+    fun storageUrl(path: String): String {
+        val clean = path.trim().trimStart('/')
+        return "${BuildConfig.SUPABASE_URL}/storage/v1/object/authenticated/me-apps/$clean"
+    }
+
+    fun storageHeaders(): Map<String, String> = mapOf(
+        "apikey" to BuildConfig.SUPABASE_PUBLISHABLE_KEY,
+        "Authorization" to "Bearer ${accessToken()}"
+    )
 
     suspend fun login(email: String, password: String) = withContext(Dispatchers.IO) {
         val payload = JSONObject()
@@ -55,6 +91,19 @@ class AppCatalogRepository(private val context: Context) {
         )
         ensureSuccess(result)
         saveSession(JSONObject(result.body), email.trim())
+
+        // Verifica subito che l'account abbia i permessi admin per il catalogo.
+        val probe = rawRequest(
+            method = "GET",
+            path = "/rest/v1/me_apps?select=id&limit=1",
+            body = null,
+            token = accessToken(),
+            contentType = "application/json"
+        )
+        if (probe.code !in 200..299) {
+            logout()
+            throw IllegalStateException("Questo account non ha accesso amministratore al catalogo App")
+        }
     }
 
     fun logout() {
@@ -65,9 +114,10 @@ class AppCatalogRepository(private val context: Context) {
     }
 
     suspend fun listApps(): List<CatalogApp> {
+        val select = "*,me_app_releases(*),me_app_screenshots(*)"
         val body = request(
             "GET",
-            "/rest/v1/me_apps?select=*&order=updated_at.desc"
+            "/rest/v1/me_apps?select=$select&order=updated_at.desc"
         )
         val array = JSONArray(body)
         return buildList {
@@ -125,6 +175,14 @@ class AppCatalogRepository(private val context: Context) {
         )
     }
 
+    suspend fun deleteApp(appId: String) {
+        request(
+            "DELETE",
+            "/rest/v1/me_apps?id=eq.$appId",
+            prefer = "return=minimal"
+        )
+    }
+
     suspend fun uploadIcon(appId: String, uri: Uri) {
         val path = uploadObject(appId, "icon", uri)
         val payload = JSONObject().put("icon_path", path).toString()
@@ -148,6 +206,15 @@ class AppCatalogRepository(private val context: Context) {
             body = payload,
             prefer = "return=minimal"
         )
+    }
+
+    suspend fun deleteScreenshot(screenshot: AppScreenshot) {
+        request(
+            "DELETE",
+            "/rest/v1/me_app_screenshots?id=eq.${screenshot.id}",
+            prefer = "return=minimal"
+        )
+        deleteStorageObject(screenshot.storagePath)
     }
 
     suspend fun uploadApk(
@@ -175,14 +242,36 @@ class AppCatalogRepository(private val context: Context) {
         )
     }
 
+    private suspend fun deleteStorageObject(path: String) = withContext(Dispatchers.IO) {
+        var token = accessToken()
+        var result = rawRequest(
+            method = "DELETE",
+            path = "/storage/v1/object/me-apps/${path.trimStart('/')}",
+            body = null,
+            token = token,
+            contentType = "application/json"
+        )
+        if (result.code == 401 && refreshSessionInternal()) {
+            token = accessToken()
+            result = rawRequest(
+                method = "DELETE",
+                path = "/storage/v1/object/me-apps/${path.trimStart('/')}",
+                body = null,
+                token = token,
+                contentType = "application/json"
+            )
+        }
+        if (result.code !in 200..299 && result.code != 404) ensureSuccess(result)
+    }
+
     private suspend fun uploadObject(appId: String, folder: String, uri: Uri): String = withContext(Dispatchers.IO) {
         val original = queryFileName(uri).ifBlank { "file" }
         val safeName = original.replace(Regex("[^A-Za-z0-9._-]"), "_")
         val path = "$appId/$folder/${System.currentTimeMillis()}_$safeName"
-        var token = accessToken() ?: throw IllegalStateException("Accesso richiesto")
+        var token = accessToken().ifBlank { throw IllegalStateException("Accesso richiesto") }
         var result = rawUpload(path, uri, token)
         if (result.code == 401 && refreshSessionInternal()) {
-            token = accessToken() ?: throw IllegalStateException("Sessione scaduta")
+            token = accessToken().ifBlank { throw IllegalStateException("Sessione scaduta") }
             result = rawUpload(path, uri, token)
         }
         ensureSuccess(result)
@@ -195,10 +284,10 @@ class AppCatalogRepository(private val context: Context) {
         body: String? = null,
         prefer: String? = null
     ): String = withContext(Dispatchers.IO) {
-        var token = accessToken() ?: throw IllegalStateException("Accesso richiesto")
+        var token = accessToken().ifBlank { throw IllegalStateException("Accesso richiesto") }
         var result = rawRequest(method, path, body, token, "application/json", prefer)
         if (result.code == 401 && refreshSessionInternal()) {
-            token = accessToken() ?: throw IllegalStateException("Sessione scaduta")
+            token = accessToken().ifBlank { throw IllegalStateException("Sessione scaduta") }
             result = rawRequest(method, path, body, token, "application/json", prefer)
         }
         ensureSuccess(result)
@@ -234,9 +323,7 @@ class AppCatalogRepository(private val context: Context) {
 
         val body = object : RequestBody() {
             override fun contentType() = mime.toMediaTypeOrNull()
-
             override fun contentLength(): Long = queryFileSize(uri) ?: -1L
-
             override fun writeTo(sink: BufferedSink) {
                 val input = resolver.openInputStream(uri)
                     ?: throw IllegalStateException("Impossibile leggere il file selezionato")
@@ -283,8 +370,6 @@ class AppCatalogRepository(private val context: Context) {
             .apply()
     }
 
-    private fun accessToken(): String? = prefs.getString("access_token", null)
-
     private fun queryFileName(uri: Uri): String {
         var result = ""
         context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
@@ -301,17 +386,50 @@ class AppCatalogRepository(private val context: Context) {
         return result
     }
 
-    private fun parseApp(json: JSONObject) = CatalogApp(
+    private fun parseRelease(json: JSONObject) = AppRelease(
         id = json.getString("id"),
-        slug = json.getString("slug"),
-        name = json.getString("name"),
-        packageName = if (json.isNull("package_name")) "" else json.optString("package_name", ""),
-        shortDescription = json.optString("short_description", ""),
-        description = json.optString("description", ""),
-        iconPath = if (json.isNull("icon_path")) null else json.optString("icon_path"),
-        isPublished = json.optBoolean("is_published", false),
-        updatedAt = if (json.isNull("updated_at")) null else json.optString("updated_at")
+        versionName = json.optString("version_name", ""),
+        versionCode = if (json.isNull("version_code")) null else json.optInt("version_code"),
+        apkPath = json.optString("apk_path", ""),
+        changelog = json.optString("changelog", ""),
+        fileSize = if (json.isNull("file_size")) null else json.optLong("file_size"),
+        createdAt = json.optString("created_at", "")
     )
+
+    private fun parseScreenshot(json: JSONObject) = AppScreenshot(
+        id = json.getString("id"),
+        storagePath = json.optString("storage_path", ""),
+        caption = json.optString("caption", ""),
+        sortOrder = json.optInt("sort_order", 0),
+        createdAt = json.optString("created_at", "")
+    )
+
+    private fun parseApp(json: JSONObject): CatalogApp {
+        val releaseArray = json.optJSONArray("me_app_releases") ?: JSONArray()
+        val screenshotArray = json.optJSONArray("me_app_screenshots") ?: JSONArray()
+        val releases = buildList {
+            for (i in 0 until releaseArray.length()) add(parseRelease(releaseArray.getJSONObject(i)))
+        }
+        val screenshots = buildList {
+            for (i in 0 until screenshotArray.length()) add(parseScreenshot(screenshotArray.getJSONObject(i)))
+        }
+
+        return CatalogApp(
+            id = json.getString("id"),
+            slug = json.optString("slug", ""),
+            name = json.optString("name", ""),
+            packageName = if (json.isNull("package_name")) "" else json.optString("package_name", ""),
+            shortDescription = json.optString("short_description", ""),
+            description = json.optString("description", ""),
+            iconPath = if (json.isNull("icon_path")) null else json.optString("icon_path"),
+            isPublished = json.optBoolean("is_published", false),
+            publishedAt = if (json.isNull("published_at")) null else json.optString("published_at"),
+            createdAt = json.optString("created_at", ""),
+            updatedAt = json.optString("updated_at", ""),
+            releases = releases,
+            screenshots = screenshots
+        )
+    }
 
     private fun ensureSuccess(result: HttpResult) {
         if (result.code in 200..299) return
