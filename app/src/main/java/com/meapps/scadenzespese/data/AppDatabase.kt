@@ -15,7 +15,7 @@ class Converters {
 }
 
 @Database(entities = [CategoryEntity::class, EntryEntity::class, HistoryEntity::class,
-    ReminderEntity::class], version = 1, exportSchema = true)
+    ReminderEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dao(): AppDao
