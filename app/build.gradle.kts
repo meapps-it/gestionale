@@ -9,11 +9,11 @@ android {
     namespace = "com.meapps.scadenzespese"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.meapps.scadenzespese"
+        applicationId = "com.meapps.catalogo"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "2.0.0"
+        versionCode = 1
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "SUPABASE_URL", "\"https://qfjwtawsqfwmsmrrgqfi.supabase.co\"")
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"sb_publishable_-EUVjwsk3txKk2Opqrc7Kw_xFNa9Hw1\"")
