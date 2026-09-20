@@ -17,7 +17,19 @@ class MainActivity : ComponentActivity() {
         window.navigationBarColor = android.graphics.Color.rgb(55, 65, 81)
         setContent {
             val prefs = remember { getSharedPreferences("me_apps_settings", MODE_PRIVATE) }
-            var fontScale by remember { mutableStateOf(prefs.getFloat("font_scale", 1f)) }
+            val initialFontScale = remember {
+                if (!prefs.getBoolean("compact_font_v1", false)) {
+                    val compact = (prefs.getFloat("font_scale", 1f) * 0.90f).coerceIn(0.80f, 1.40f)
+                    prefs.edit()
+                        .putFloat("font_scale", compact)
+                        .putBoolean("compact_font_v1", true)
+                        .apply()
+                    compact
+                } else {
+                    prefs.getFloat("font_scale", 0.90f)
+                }
+            }
+            var fontScale by remember { mutableStateOf(initialFontScale) }
 
             CatalogTheme(fontScale = fontScale) {
                 CatalogRoot(
