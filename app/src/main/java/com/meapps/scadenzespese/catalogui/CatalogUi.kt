@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -1241,6 +1242,57 @@ private fun AppDetailScreen(
                     HorizontalDivider(color = Line)
                     Spacer(Modifier.height(12.dp))
                     Text(app.description, color = Muted, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp)
+                }
+            }
+        }
+
+        if (app.screenshots.isNotEmpty()) {
+            item {
+                WhiteCard {
+                    Text("Screenshot", fontSize = 23.sp, fontWeight = FontWeight.Black)
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        app.screenshots.size.toString() + if (app.screenshots.size == 1) " immagine archiviata" else " immagini archiviate",
+                        color = Muted,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(end = 4.dp)
+                    ) {
+                        items(
+                            app.screenshots.sortedWith(compareBy({ it.sortOrder }, { it.createdAt })),
+                            key = { it.id }
+                        ) { screenshot ->
+                            val context = LocalContext.current
+                            val token = repo.accessToken()
+                            val model = remember(screenshot.storagePath, token) {
+                                ImageRequest.Builder(context)
+                                    .data(repo.storageUrl(screenshot.storagePath))
+                                    .apply { repo.storageHeaders().forEach { (key, value) -> addHeader(key, value) } }
+                                    .crossfade(true)
+                                    .build()
+                            }
+
+                            Surface(
+                                modifier = Modifier
+                                    .width(270.dp)
+                                    .height(180.dp),
+                                shape = RoundedCornerShape(18.dp),
+                                color = Color(0xFFF4F7FB),
+                                border = BorderStroke(1.dp, Line)
+                            ) {
+                                AsyncImage(
+                                    model = model,
+                                    contentDescription = screenshot.caption.ifBlank { "Screenshot " + app.name },
+                                    modifier = Modifier.fillMaxSize().padding(4.dp),
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
