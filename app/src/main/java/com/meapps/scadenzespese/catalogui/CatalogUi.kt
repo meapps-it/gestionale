@@ -2,6 +2,7 @@ package com.meapps.scadenzespese.catalogui
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -36,6 +37,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.meapps.scadenzespese.apps.AppCatalogRepository
 import com.meapps.scadenzespese.apps.AppRelease
+import com.meapps.scadenzespese.apps.AppScreenshot
 import com.meapps.scadenzespese.apps.CatalogApp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -194,6 +196,17 @@ fun CatalogRoot(
     }
 
     val detailApp = detailAppId?.let { id -> apps.firstOrNull { it.id == id } }
+
+    // Il tasto Indietro di Android naviga dentro l'app invece di chiuderla.
+    BackHandler {
+        when {
+            menuOpen -> menuOpen = false
+            showSettings -> showSettings = false
+            detailAppId != null -> detailAppId = null
+            section != CatalogSection.DASHBOARD -> section = CatalogSection.DASHBOARD
+            else -> Unit
+        }
+    }
 
     Scaffold(
         containerColor = Bg,
@@ -1189,6 +1202,8 @@ private fun AppDetailScreen(
     onApk: () -> Unit,
     onDelete: () -> Unit
 ) {
+    var previewScreenshot by remember(app.id) { mutableStateOf<AppScreenshot?>(null) }
+
     LazyColumn(
         Modifier.fillMaxSize(),
         contentPadding = PaddingValues(18.dp),
@@ -1249,17 +1264,17 @@ private fun AppDetailScreen(
         if (app.screenshots.isNotEmpty()) {
             item {
                 WhiteCard {
-                    Text("Screenshot", fontSize = 23.sp, fontWeight = FontWeight.Black)
-                    Spacer(Modifier.height(4.dp))
+                    Text("Screenshot", fontSize = 20.sp, fontWeight = FontWeight.Black)
+                    Spacer(Modifier.height(3.dp))
                     Text(
-                        app.screenshots.size.toString() + if (app.screenshots.size == 1) " immagine archiviata" else " immagini archiviate",
+                        "Tocca una miniatura per ingrandirla",
                         color = Muted,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(10.dp))
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(9.dp),
                         contentPadding = PaddingValues(end = 4.dp)
                     ) {
                         items(
@@ -1278,16 +1293,18 @@ private fun AppDetailScreen(
 
                             Surface(
                                 modifier = Modifier
-                                    .width(270.dp)
-                                    .height(180.dp),
-                                shape = RoundedCornerShape(18.dp),
+                                    .width(132.dp)
+                                    .height(92.dp)
+                                    .clickable { previewScreenshot = screenshot },
+                                shape = RoundedCornerShape(14.dp),
                                 color = Color(0xFFF4F7FB),
-                                border = BorderStroke(1.dp, Line)
+                                border = BorderStroke(1.2.dp, Line),
+                                shadowElevation = 1.dp
                             ) {
                                 AsyncImage(
                                     model = model,
                                     contentDescription = screenshot.caption.ifBlank { "Screenshot " + app.name },
-                                    modifier = Modifier.fillMaxSize().padding(4.dp),
+                                    modifier = Modifier.fillMaxSize().padding(5.dp),
                                     contentScale = ContentScale.Fit
                                 )
                             }
@@ -1354,6 +1371,44 @@ private fun AppDetailScreen(
                 Icon(Icons.Default.Delete, null)
                 Spacer(Modifier.width(8.dp))
                 Text("Elimina scheda app", fontWeight = FontWeight.Black)
+            }
+        }
+    }
+    previewScreenshot?.let { screenshot ->
+        val context = LocalContext.current
+        val token = repo.accessToken()
+        val model = remember(screenshot.storagePath, token) {
+            ImageRequest.Builder(context)
+                .data(repo.storageUrl(screenshot.storagePath))
+                .apply { repo.storageHeaders().forEach { (key, value) -> addHeader(key, value) } }
+                .crossfade(true)
+                .build()
+        }
+
+        Dialog(onDismissRequest = { previewScreenshot = null }) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                color = Color.White
+            ) {
+                Column(Modifier.padding(10.dp)) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        IconButton(onClick = { previewScreenshot = null }) {
+                            Icon(Icons.Default.Close, contentDescription = "Chiudi")
+                        }
+                    }
+                    AsyncImage(
+                        model = model,
+                        contentDescription = screenshot.caption.ifBlank { "Screenshot " + app.name },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 180.dp, max = 560.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
             }
         }
     }
